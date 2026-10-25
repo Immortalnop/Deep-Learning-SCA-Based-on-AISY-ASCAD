@@ -1,0 +1,32 @@
+<!-- Sidebar -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion fixed-top" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+        <div class="sidebar-brand-text mx-3">AISY Framework</sup></div>
+    </a>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for( 'scripts') }}">
+            <i class="fas fa-fw fa-table"></i>
+            <span style="color: #ffffff">Scripts</span></a>
+    </li>
+
+    <hr class="sidebar-divider">
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('databases') }}">
+            <i class="fas fa-fw fa-table"></i>
+            <span style="color: #ffffff">Databases</span></a>
+    </li>
+
+    <hr class="sidebar-divider">
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('documentation') }}">
+            <i class="fas fa-fw fa-table"></i>
+            <span style="color: #ffffff">Documentation</span></a>
+    </li>
+
+</ul>
+<!-- End of Sidebar -->
