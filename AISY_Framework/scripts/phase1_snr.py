@@ -36,11 +36,11 @@ import matplotlib
 matplotlib.use("Agg")  # no display needed
 import matplotlib.pyplot as plt
 import numpy as np
-from aisy_sca.crypto.aes.aes128 import s_box
 
 from custom.custom_datasets.datasets import datasets_dict
 from scripts.experiment_log import log_to
 from scripts.experiment_output import finish_run, start_run
+from scripts.sca_protocol import HW, S_BOX
 
 TARGETS = ["sbox", "sbox_xor_r", "r", "sbox_xor_rout", "rout", "random"]
 TITLES = {
@@ -52,7 +52,6 @@ TITLES = {
     "random": "random labels  (noise floor)",
 }
 MASK_R_IN, MASK_R_OUT = 16, 17  # positions of r_in and r_out in metadata['masks']
-HW = np.array([bin(v).count("1") for v in range(256)], dtype=np.uint8)
 PEAKS_PER_TARGET = 3
 PEAK_MIN_DISTANCE = 20  # samples between two reported peaks of one target
 SIGNIFICANT = 2.0       # a peak counts as leakage when SNR > 2 x the noise-floor peak
@@ -62,7 +61,7 @@ def target_values(metadata, byte, rng):
     p = metadata["plaintext"][:, byte]
     k = metadata["key"][:, byte]
     masks = metadata["masks"]
-    sbox = s_box[p ^ k].astype(np.uint8)
+    sbox = S_BOX[p ^ k]
     return {
         "sbox": sbox,
         "sbox_xor_r": sbox ^ masks[:, byte],
@@ -114,7 +113,7 @@ def checks(f, args, dataset):
     n = min(args.traces, 5000)
     meta = f["Profiling_traces/metadata"][:n]
     labels = f["Profiling_traces/labels"][:n]
-    sbox = s_box[meta["plaintext"][:, args.byte] ^ meta["key"][:, args.byte]]
+    sbox = S_BOX[meta["plaintext"][:, args.byte] ^ meta["key"][:, args.byte]]
     match = float(np.mean(labels == sbox))
     lines.append(f"- File labels equal Sbox(p[{args.byte}] ^ k[{args.byte}]) for {match:.1%} of the first {n} "
                  f"profiling traces.")

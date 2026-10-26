@@ -16,7 +16,6 @@
 # One row per run is added to resources/experiments/index.csv.
 import argparse
 import csv
-import json
 import os
 import random
 import sqlite3
@@ -31,25 +30,15 @@ from custom.custom_models.neural_networks import cnn_sca_light, mlp
 from scripts.experiment_log import log_to
 from scripts.experiment_output import configure_aisy, finish_run, start_run
 from scripts.experiment_seed import SEED_RANGE, set_seed
+from scripts.sca_protocol import (DATABASE_FOLDER, DATABASE_NAME, LABEL_BEST, LABEL_FINAL, PROTOCOL, read_curve,
+                                  traces_to_threshold)
 
 MODELS = {
     "mlp": mlp,             # AISY basic MLP: 4 x 200 selu
     "cnn": cnn_sca_light,   # group 30 CNN
 }
 
-# Same for every model. Early stopping keeps the epoch with the lowest validation GE;
-# it needs a validation set, so AISY splits the 10,000 attack traces into 5,000 + 5,000.
-PROTOCOL = {
-    "dataset": "ASCAD.h5",
-    "leakage_model": "HW",
-    "byte": 2,
-    "profiling_traces": 50000,
-    "attack_traces": 10000,
-    "key_rank_executions": 100,
-    "key_rank_attack_traces": 1000,
-    "key_rank_report_interval": 10,
-}
-
+# Protocol (data split, key rank settings) is shared by every phase: scripts/sca_protocol.py.
 EARLY_STOPPING = {
     "metrics": {
         "guessing_entropy": {
@@ -59,13 +48,6 @@ EARLY_STOPPING = {
         }
     }
 }
-
-DATABASE_FOLDER = "databases/"
-DATABASE_NAME = "database_ascad.sqlite"
-GE_THRESHOLD = 2  # AISY counts a key as found when GE < 2 (rank 1 = best)
-LABEL_FINAL = "Attack Set"                          # weights after the last epoch
-LABEL_BEST = "ES Attack Set guessing_entropy"       # weights from the best epoch
-
 
 def run_one(model_name, seed, epochs, batch_size, folder):
     tf.keras.backend.clear_session()
@@ -87,27 +69,6 @@ def run_one(model_name, seed, epochs, batch_size, folder):
         early_stopping=EARLY_STOPPING,
     )
     return aisy.settings["analysis_id"]
-
-
-def read_curve(connection, table, analysis_id, label):
-    row = connection.execute(f'select "values", report_interval from {table} where analysis_id = ? and label = ?',
-                             (analysis_id, label)).fetchone()
-    if row is None:
-        return None, None
-    values = json.loads(row[0])
-    if isinstance(values, str):  # AISY stores the JSON twice encoded
-        values = json.loads(values)
-    return [values[str(i)] for i in range(len(values))], row[1]
-
-
-def traces_to_threshold(ge, interval):
-    # Number of attack traces after which GE stays below the threshold; None if never.
-    above = [i for i, value in enumerate(ge) if value >= GE_THRESHOLD]
-    if not above:
-        return interval
-    if above[-1] == len(ge) - 1:
-        return None
-    return (above[-1] + 2) * interval
 
 
 def results_for(analysis_id):

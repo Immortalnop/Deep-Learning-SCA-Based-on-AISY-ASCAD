@@ -76,6 +76,8 @@ the correct attack key and all 1,400 samples (see the Phase 1 changelog).
 | `scripts/phase0_compare.py` | Phase 0: AISY MLP vs our CNN under one protocol, over several seeds. |
 | `scripts/phase1_snr.py` | Phase 1: SNR leakage analysis on the profiling traces. |
 | `scripts/phase2_baselines.py` | Phase 2: template attacks (PCA + QDA) and CPA under the Phase 0 GE protocol. |
+| `scripts/sca_protocol.py` | Protocol shared by every phase: split sizes, same traces as AISY, key rank, GE / SR, AISY database curves. No TensorFlow. |
+| `scripts/phase3_study.py` | Phase 3: random search, CCE vs CER, ablations (leakage model, profiling size, architecture), ensembles, report. |
 | `scripts/experiment_seed.py` | Shared seed (`SCA_SEED`) for Python, numpy and TensorFlow. |
 | `scripts/experiment_log.py` | Writes everything printed to the console and to a `log.txt`. |
 | `scripts/experiment_output.py` | One output folder per run (`start_run`), AISY folder setup (`configure_aisy`), `index.csv` row (`finish_run`). |
@@ -107,8 +109,8 @@ resources root, so they create `resources/{databases,figures,models,npz}/` and a
 |---|---|
 | 0: Fix the baseline | Tooling done. Results from before 2026-10-21 are invalid (wrong attack key, see Phase 1). Rerun needed. |
 | 1: Leakage analysis | Done. |
-| 2: Classic baselines | Not started. |
-| 3: Systematic CNN study | Not started. |
+| 2: Classic baselines | Done. Best real classic attack: HW templates on the share points, GE < 2 after 250–260 traces. |
+| 3: Systematic CNN study | Tooling done and tested end to end (`scripts/phase3_study.py`). Full study run still open (about 10–12 h on this CPU). |
 | 4: Robustness to misalignment | Not started. |
 | 5: Explainability and harder data | Not started. |
 
@@ -117,6 +119,156 @@ resources root, so they create `resources/{databases,figures,models,npz}/` and a
 ## Changelog
 
 Newest phase first. Each entry lists what changed and how it was checked.
+
+### Phase 3: Systematic CNN study
+
+#### 2026-10-26 — Study tooling (search, loss, ablations, ensembles, report)
+
+**Added**
+- `scripts/phase3_study.py`: the whole study on one folder, `resources/experiments/phase3_<timestamp>/`, in stages.
+  A stage can be rerun on the same folder (`--study`): finished runs are skipped, failed runs are retried.
+
+  | Stage | What it runs | Default size |
+  |---|---|---|
+  | `search` | Random search over `cnn_search` (HW classes, 50,000 profiling traces, CCE). Space: 1–3 conv blocks, 8/16/32 filters (doubling per block), kernel 11/25/51, average pooling 2/4/8, 1–3 dense layers of 64/128/256, relu/selu, learning rate 1e-3/5e-4/1e-4, batch 128/256. | `--trials 20` |
+  | `loss` | The `--top` best search models retrained with the CER loss (`custom/custom_loss/cer.py`), same seed: a paired CCE vs CER comparison. | `--top 3` |
+  | `ablate` | The best search-family model (by validation, over search and loss) for each seed: as is, ID classes instead of HW, profiling sets of 5k / 10k / 25k, and the fixed architectures AISY MLP and `cnn_sca_light` (`--archs ascad_cnn_best` adds ASCAD CNN_best, ~90M parameters). | `--seeds 1 2 3` |
+  | `report` | `ranking.csv`, `ensembles.csv` (top 1/3/5/10 search models), `loss.csv`, `ablations.csv` (mean ± std over seeds), `ge_best.png` (next to the Phase 2 templates), `ablation_profiling.png`, `summary.md`. | — |
+  | `all` | All four in order. | — |
+- `custom/custom_metrics/ge_area.py`: early-stopping metric, the validation GE area.
+- `custom/custom_callbacks/callbacks.py`: `PlateauStop` (stop after `--patience` epochs without a better GE area;
+  AISY still keeps the best epoch) and `TensorBoardLog` (loss and accuracy per epoch in `tensorboard/<run>/`).
+- `custom/custom_models/neural_networks.py`: `cnn_search(classes, samples, hp, loss)`. Flatten keeps sample positions,
+  so the dense layers can combine the two shares 812–883 samples apart (Phase 1) whatever the receptive field.
+- `scripts/sca_protocol.py`: `guess_classes`, `key_scores`, `ge_area`, `validation_log_probabilities`.
+- `scripts/experiment_output.py`: `resume_run(folder)`, to add stages to an existing run folder (one `index.csv` row
+  per stage, kind `phase3_<stage>`).
+
+**Rules used** (in addition to the Phase 2 rules, which Phase 3 reuses for every attack-set number)
+
+| Quantity | Rule |
+|---|---|
+| Validation GE area | Mean of the validation GE curve (GE after 10, 20, …, 1,000 traces), 100 fixed subsets of the 5,000 validation traces (seed 1). Lower = key found with fewer traces. Unlike the final GE, it still separates models once several reach GE 1. |
+| Early stopping | AISY keeps the weights of the epoch with the lowest validation GE area (first one on a tie). Training stops after `--patience` (10) epochs with no lower value, at most `--epochs` (50). |
+| Model selection | Validation GE area only, for the search ranking, the `--top` models for CER, the ablation base model, the ensemble members and the ensemble size. Attack-set numbers are only reported, so the selection cannot overfit the attack set. |
+| Attack metrics | Best-epoch log-probabilities on attack traces 5,000–9,999, ranked with the Phase 2 rules on the same 100 subsets (`--subset-seed 0` = Phase 2 `--seed 0`). |
+| Ensemble | Sum of the log-probability of each key guess over the members (then over the traces, as for one model). |
+| Ablation result | Mean ± std over the seeds; "traces to GE < 2" averages only the seeds that reach it, and the count is shown. |
+| Phase 2 bar | Best real Phase 2 attack (fewest traces to GE < 2, `cpa_known_mask` excluded) of the newest Phase 2 run with the same subset seed. |
+
+**Changed**
+- `custom/custom_metrics/guessing_entropy.py` (Phase 0's early-stopping metric): **bug fix.** It added raw
+  probabilities over the traces instead of log-probabilities, so it chose the best epoch with a rule that is neither
+  AISY's key rank nor maximum likelihood. It now uses `sca_protocol` (log-probabilities, ties count half, fixed
+  subsets) and computes the 256 key-guess labels in one vectorised step instead of 256 AISY calls per epoch. Phase 0
+  has no valid run yet, so no result changes; its rerun uses the fixed metric.
+- `scripts/phase2_baselines.py`: key-guess labels from `sca_protocol.guess_classes` (was its own copy). Same result
+  (`template_poi_HW` reaches GE < 2 after 260 traces, as before).
+
+**Verified**
+- Smoke test of every stage (`all --trials 2 --epochs 2 --patience 1 --top 1 --seeds 1 --archs mlp --sizes 5000
+  50000 --ensemble-sizes 1 2`): 7 runs `ok`, every output file written, one `index.csv` row per stage, report
+  stage rerun on the same folder. Database and `index.csv` backed up before and restored after; test folder removed.
+- The saved predictions come from the best epoch: the recomputed validation GE area equals the epoch's logged
+  value exactly (70.44 for a run whose best epoch was 1 of 2), and the attack GE matches AISY's own best-epoch curve
+  in the database (147.6 vs 151.3, different random subsets), not its last-epoch curve (174.9).
+- `PlateauStop` stops after the patience; the dataset is loaded once and reused while consecutive runs need the
+  same one (92 s for a run against 172 s with loading); a switch to ID classes or another profiling size reloads it.
+- Metrics: a model that gives the true class probability 0.5 scores GE 1.0; a uniform model scores exactly 128.5.
+- Runtime on this CPU: 4–72 s per epoch depending on the model (MLP fastest), plus ~2 s for the validation metric.
+  Full default study ≈ 44 runs, about 10–12 h.
+
+**Note on uncertainty:** all 100 subsets come from the same 5,000 attack traces, so they overlap, and the "±" over
+subsets understates the real uncertainty. A near-random model can land well above or below GE 128 by chance (seen in
+the smoke test: 101–185 after 2 epochs). The spread over the ablation seeds (independent trainings) is the one to
+trust.
+
+**To run the study** (from `AISY_Framework`; each stage can also run on its own with `--study <folder>`):
+```
+..\aisy_env\Scripts\python.exe -m scripts.phase3_study all --trials 20
+```
+
+### Phase 2: Classic baselines
+
+#### 2026-10-25 — Template attacks and CPA, shared protocol
+
+**Added**
+- `scripts/sca_protocol.py`: the attack protocol in one place, for every phase.
+  - `PROTOCOL` (moved from `phase0_compare.py`): ASCAD.h5, byte 2, 50,000 profiling / 10,000 attack traces, 100 key
+    ranks on 1,000 attack traces, every 10 traces.
+  - `load_split`: the same traces AISY uses (first 50,000 profiling traces, `datasets.py` sample window, attack traces
+    5,000–9,999 because early stopping takes the first half for validation). Stops if the attack key in the file
+    differs from `datasets.py`.
+  - `attack_subsets`, `key_ranks`, `ge_sr`, `traces_to_threshold`, `read_curve`, `S_BOX`, `HW`.
+  - No TensorFlow import (importing `aisy_sca` loads it), so Phase 1 and 2 start in about 5 s instead of 18 s.
+    `S_BOX` is computed from FIPS-197 and is checked equal to `aisy_sca.crypto.aes.aes128.s_box`.
+
+**Changed**
+- `scripts/phase2_baselines.py` (it existed, but its only run, on 2026-10-23, stopped after loading the data and left only
+  `log.txt`; archived to `resources/experiments/_archive/phase2_incomplete/`):
+  - Uses `sca_protocol` instead of importing `phase0_compare` (which loaded TensorFlow and the models).
+  - Respects the AISY sample window and checks the attack key against `datasets.py`.
+  - Templates run for both ID and HW classes (`--leakage-models`, default both). Phase 0 trains on HW, so the
+    `_HW` rows are the fair comparison. A class with no profiling traces gets AISY's floor probability, not a crash.
+  - Key rank: tied key guesses count half (expected rank under a random tie break). With HW labels many guesses tie
+    early, and counting ties as wins made GE look better than it is.
+  - Share points: up to 2 SNR peaks per share above 2 × the noise floor (Phase 1 criterion). Templates use all of them;
+    2nd-order CPA uses the top peak of each share, with ±5-sample windows, and both share pairs.
+  - One pass over the profiling traces gives the SNR peaks and the correlation plot (was two passes, with
+    float64 copies of the 50,000 × 1,400 traces).
+  - CPA: variance terms as vectors and one reused covariance buffer: same ranks, about 3× faster.
+  - A failed attack is logged and listed as failed; the others still run. A run that stops still writes its
+    `index.csv` row (status `failed: <error>`).
+  - `results.csv` / `summary.md`: GE ± std over the 100 subsets, median final rank, SR, traces to GE < 2, and status.
+- `scripts/phase0_compare.py`: imports the protocol from `sca_protocol.py`. Same behaviour.
+- `scripts/phase1_snr.py`: `S_BOX` and `HW` from `sca_protocol.py`. Same results (checked: same peak samples).
+
+**Rules used** (in `scripts/sca_protocol.py` and `scripts/phase2_baselines.py`; the same for every attack)
+
+| Quantity | Rule |
+|---|---|
+| Attack subsets | 100 subsets of 1,000 traces, drawn without replacement from attack traces 5,000–9,999 (`--seed`, default 0). Every attack uses the same subsets. |
+| Score of a key guess, templates | Sum over the traces of log P(class predicted by the guess \| trace). QDA uses uniform priors, so this is the normalised log-likelihood. This is AISY's additive rule, so networks and templates are scored the same way. A class with no profiling traces gets log(1e-36), AISY's floor. |
+| Score of a key guess, CPA | max over samples (or over product columns, for 2nd order) of \|Pearson correlation\| between the HW hypothesis and the traces seen so far in the subset. |
+| Rank of the correct key | rank = 1 + (number of guesses with a higher score) + ½ × (number of other guesses with the same score). The ½ is the expected rank under a random tie break. AISY breaks ties by whatever order `np.argsort` returns. |
+| GE | Mean rank over the 100 subsets, every 10 traces. |
+| SR | Share of the 100 subsets where the correct key is ranked 1 with no tie. |
+| Traces to GE < 2 | Smallest trace count (a multiple of 10) after which GE stays below 2 up to 1,000 traces. "Not reached" if the final GE is 2 or more. This is the same function Phase 0 uses (`traces_to_threshold`). GE < 2 is AISY's "key found" threshold, which Eval_params.md calls "GE = 1". |
+| Share points | SNR per sample with 256 ID classes (Phase 1 method) for each share. Keep the top peak and, at least 20 samples away, a second peak only if its SNR is above 2 × the noise floor (the highest SNR with random labels). |
+| Samples used | Templates: ±5 samples (`--poi-width`) around every share point. 2nd-order CPA: ±5 samples around the top peak of each share, centred products for the pairs (r, Sbox ^ r) and (r_out, Sbox ^ r_out), centred with the profiling means. |
+| Best real classic attack | Smallest traces to GE < 2. `cpa_known_mask` is excluded because it uses the secret mask. |
+
+**Results** (`resources/experiments/phase2_20261025_233322/`, seed 0; `phase2_20261025_233801/`, seed 1 for the
+attack subsets; final values after 1,000 attack traces)
+
+| Attack | Final GE (seed 0 / 1) | Final SR (seed 0 / 1) | Traces to GE < 2 (seed 0 / 1) |
+|---|---|---|---|
+| `template_poi_HW` (share-point windows, HW classes) | 1.0 / 1.0 | 1.00 / 1.00 | **260 / 250** |
+| `template_pca_HW` (whole trace, HW classes) | 1.0 / 1.0 | 1.00 / 1.00 | 360 / 310 |
+| `template_pca_ID` (whole trace, ID classes) | 1.54 / 1.36 | 0.78 / 0.79 | 860 / 790 |
+| `template_poi_ID` (share-point windows, ID classes) | 3.41 / 3.80 | 0.57 / 0.54 | not reached |
+| `cpa_2nd_order_HW` (no mask needed) | 3.15 / 2.50 | 0.59 / 0.67 | not reached (median rank 1) |
+| `cpa_HW` (first order) | 117 / 130 | 0.00 / 0.00 | not reached |
+| `cpa_known_mask_HW` (uses the true mask: not a real attack) | 1.0 / 1.0 | 1.00 / 1.00 | 30 / 40 |
+
+- First-order CPA is at random level (GE ≈ 128): masking works. With the true mask the key falls in 30–40 traces, so
+  each share leaks strongly on its own. A good attack must combine the two shares.
+- Templates combine the shares through QDA's per-class covariance. HW templates beat ID templates: 9 classes
+  (about 195 to 13,700 traces each) give better covariance estimates than 256 classes with about 195 each.
+- Best real classic attack: HW templates on the share points, GE < 2 after 250–260 traces. **This is the bar for
+  Phase 3**: a network that needs more traces is worse than a classic attack.
+- 2nd-order CPA: median rank 1 after 1,000 traces, but a few failed subsets hold the GE mean above 2.
+- r_out leaks at sample 188 too, not only at its second peak 125 (the Phase 1 entry calls 125 its "own" peak):
+  2nd-order CPA on (188, 1000) gives median rank 2, on (125, 1000) median rank 15.
+- Between the two subset seeds, traces to GE < 2 change by 4–14 %; the order of the attacks stays the same.
+
+**Verified**
+- Full runs, seeds 0 and 1: all 7 attacks `ok`, every output file written, one `index.csv` row each.
+- `S_BOX` equal to AISY's table; tie rule checked on small cases; new CPA gives identical ranks to the old code on
+  synthetic traces (3,000 traces, 5 subsets) and recovers a planted key.
+- `phase0_compare --help` imports and parses; `phase1_snr --traces 2000` gives the same peak samples as before (test
+  folder and index row removed afterwards).
+- Development runs from this session are in `resources/experiments/_archive/phase2_dev/` (no index rows).
 
 ### Tooling
 
@@ -203,6 +355,7 @@ Newest phase first. Each entry lists what changed and how it was checked.
   AvgPool-4 blocks), so only its dense layers after `Flatten` can combine the shares. Phase 3 should test wider
   receptive fields.
 - The r_out top peak (sample 188) is at the same sample as the r[2] peak. Its own separate peak is at 125.
+  (Phase 2: 188 is real r_out leakage too; 2nd-order CPA works better with 188 than with 125.)
 - Peak SNR stops changing after about 10,000 profiling traces, while the noise floor keeps falling
   (`snr_vs_traces.png`). The leakage itself is stable with small profiling sets.
 - HW classes give the same peak samples.
