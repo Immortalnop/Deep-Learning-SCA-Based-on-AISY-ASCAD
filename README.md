@@ -1,4 +1,4 @@
-# Deep Learning-Based Side-Channel Attack on AES Using Power Traces (group 30)
+# Deep Learning-Based Side-Channel Attack on AES Using Power Traces 
 
 Neural networks learn from ASCAD power traces and recover AES key byte 2. Training, guessing entropy (GE),
 success rate (SR) and run logging use the AISY framework.
@@ -8,6 +8,7 @@ profiling data, and how do they compare to classic attacks?
 
 - Folder and file map: `DIRECTORY_STRUCTURE.md`
 - Evaluation protocol: `Eval_params.md`
+- How to run each phase: [Run instructions](#run-instructions) below
 - Changelog, by phase: [Changelog](#changelog) below
 
 ---
@@ -36,16 +37,110 @@ If `aisy_env` does not work, rebuild it:
 Do not install other analysis libraries (for example `scared`, `lascar`) into `aisy_env`. They can break AISY.
 Use a separate environment for them.
 
-## Running scripts
+## Run instructions
 
-Run every script from `AISY_Framework`, as a module:
+### Before you start
+
+1. Do the [Setup](#setup) above.
+2. Get the dataset. `AISY_Framework/data/ASCAD.h5` must exist. If it is missing, download the ASCAD v1
+   variable-key file and rename it (source: `ASCAD/ATMEGA_AES_v1/ATM_AES_v1_variable_key/Readme.md`):
+   ```powershell
+   Invoke-WebRequest https://www.data.gouv.fr/api/1/datasets/r/b4ace767-c2a4-4db4-8e01-4527b5b91f00 -OutFile AISY_Framework\data\ASCAD.h5
+   ```
+3. Run every script from `AISY_Framework`, as a module (`-m scripts.<name>`, not `python scripts\<name>.py`):
+   ```powershell
+   cd AISY_Framework
+   ```
+4. Every script lists its options with `--help`, for example
+   `..\aisy_env\Scripts\python.exe -m scripts.phase2_baselines --help`.
+
+### Run order
+
+Run the phases in this order. Each step lists what it needs from the steps before it.
+
+| Step | Phase | Needs | Time on this CPU |
+|---|---|---|---|
+| 1 | Phase 1: Leakage analysis | Dataset only | about 30 s |
+| 2 | Phase 0: Baseline (MLP vs CNN) | Dataset only | not timed yet: 3 seeds × 2 models × 50 epochs, 4–72 s per epoch |
+| 3 | Phase 2: Classic baselines | Dataset only (Phase 0 ids optional, for the plot) | about 4–5 min per seed |
+| 4 | Phase 3: Systematic CNN study | A finished Phase 2 run with the same subset seed | about 10–12 h |
+
+Phase 1 runs before Phase 0 because it shows where the leakage is. It needs no training.
+
+### Phase 1: Leakage analysis (SNR)
 
 ```powershell
-cd AISY_Framework
-..\aisy_env\Scripts\python.exe -m scripts.phase1_snr
-..\aisy_env\Scripts\python.exe -m scripts.phase0_compare
-..\aisy_env\Scripts\python.exe -m scripts.script_aes_cnn
+..\aisy_env\Scripts\python.exe -m scripts.phase1_snr                      # ID classes, 50,000 traces
+..\aisy_env\Scripts\python.exe -m scripts.phase1_snr --leakage-model HW   # HW classes
 ```
+
+- Main options: `--byte` (default 2), `--traces` (default 50000), `--sizes` (default 1000 5000 10000 25000),
+  `--leakage-model ID|HW` (default ID).
+- Output: `resources/experiments/phase1_<timestamp>/` with `snr.png`, `snr_vs_traces.png`, `snr.npz`, `peaks.csv`.
+
+### Phase 0: Baseline, AISY MLP vs our CNN
+
+```powershell
+..\aisy_env\Scripts\python.exe -m scripts.phase0_compare
+```
+
+- **Rerun required.** Results from before 2026-10-21 are invalid (wrong attack key), and runs from before
+  2026-10-26 picked their best epoch with the old raw-probability metric (see the Phase 3 changelog).
+- Default: 3 generated seeds, 50 epochs, batch size 128, both models.
+- Main options: `--seeds 1 2 3` (fixed seeds instead of generated ones), `--n-seeds`, `--epochs`, `--batch-size`,
+  `--models mlp cnn`.
+- Output: `resources/experiments/phase0_<timestamp>/` with `log.txt`, `runs.csv`, `summary.md`. The AISY analysis
+  ids of the runs are in `resources/experiments/index.csv` (column `analysis_ids`).
+
+### Phase 2: Classic baselines (templates and CPA)
+
+```powershell
+..\aisy_env\Scripts\python.exe -m scripts.phase2_baselines --seed 0
+..\aisy_env\Scripts\python.exe -m scripts.phase2_baselines --seed 1   # optional second seed
+```
+
+- Default: all methods (`template_pca`, `template_poi`, `cpa`, `cpa_known_mask`, `cpa_2nd_order`), ID and HW
+  templates, 20 PCA components, ±5 samples around each share point.
+- `--seed` sets the attack subsets. Phase 3 compares against the Phase 2 run with the same seed, so run
+  `--seed 0` at least once before Phase 3.
+- To draw Phase 0 networks on the same GE plot, pass their AISY analysis ids from `index.csv`:
+  `--aisy-ids 12 13 14`.
+- Main options: `--methods`, `--leakage-models ID HW`, `--components`, `--poi-width`.
+- Output: `resources/experiments/phase2_<timestamp>/`.
+
+### Phase 3: Systematic CNN study
+
+Full study, all stages in order (`search`, `loss`, `ablate`, `report`):
+
+```powershell
+..\aisy_env\Scripts\python.exe -m scripts.phase3_study all --trials 20
+```
+
+- Needs: a Phase 2 run with `--seed 0` (or set `--subset-seed` to match another Phase 2 seed, or give the folder
+  with `--phase2 <folder>`).
+- Output: `resources/experiments/phase3_<timestamp>/`, with `summary.md` from the `report` stage.
+- Run one stage at a time on the same folder. Finished runs are skipped and failed runs are retried, so this also
+  resumes an interrupted study:
+  ```powershell
+  ..\aisy_env\Scripts\python.exe -m scripts.phase3_study search --trials 20
+  ..\aisy_env\Scripts\python.exe -m scripts.phase3_study loss   --study resources\experiments\phase3_<timestamp>
+  ..\aisy_env\Scripts\python.exe -m scripts.phase3_study ablate --study resources\experiments\phase3_<timestamp>
+  ..\aisy_env\Scripts\python.exe -m scripts.phase3_study report --study resources\experiments\phase3_<timestamp>
+  ```
+- Main options: `--trials` (20), `--epochs` (50), `--patience` (10), `--top` (3), `--seeds` (1 2 3),
+  `--archs` (mlp cnn_sca_light; add `ascad_cnn_best` for ASCAD CNN_best, ~90M parameters),
+  `--sizes` (5000 10000 25000 50000), `--ensemble-sizes` (1 3 5 10).
+- Quick test before the long run (a few minutes):
+  ```powershell
+  ..\aisy_env\Scripts\python.exe -m scripts.phase3_study all --trials 2 --epochs 2 --patience 1 --top 1 --seeds 1 --archs mlp --sizes 5000 50000 --ensemble-sizes 1 2
+  ```
+  This writes a real `phase3_<timestamp>/` folder and `index.csv` rows. Delete them afterwards.
+
+### Other scripts
+
+AISY example scripts run the same way, for example `..\aisy_env\Scripts\python.exe -m scripts.script_aes_cnn`.
+
+### Outputs
 
 All outputs of a run go to one folder: `AISY_Framework/resources/experiments/<kind>_<timestamp>[_seed<N>]/`
 (for example `phase0_20261023_002735/`, or `experiment_<timestamp>_seed<N>/<script>/` from `run_experiment.py`).
