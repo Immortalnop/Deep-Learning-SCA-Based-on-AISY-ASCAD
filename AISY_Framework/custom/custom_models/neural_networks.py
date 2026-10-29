@@ -275,3 +275,34 @@ def cnn_sca_light(classes, number_of_samples):
 
     model.summary()
     return model
+
+
+# Global average pooling over the samples. Same as GlobalAveragePooling1D, but AISY's hyperparameter logging
+# (aisy_sca/utils/utils.py) reads pool_size from every layer whose class name contains "AveragePooling" and fails on it.
+class SampleMean(Layer):
+    def call(self, inputs):
+        return backend.mean(inputs, axis=1)
+
+    def compute_output_shape(self, input_shape):
+        return input_shape[0], input_shape[2]
+
+
+# Phase 3 search family (scripts/phase3_study.py samples hp). Blocks of Conv1D -> BatchNorm -> AveragePooling, filters
+# doubling per block, then Flatten and dense layers. Flatten keeps sample positions, so the dense layers can combine
+# the two shares 812-883 samples apart (Phase 1) whatever the receptive field of the convolutions.
+def cnn_search(classes, number_of_samples, hp, loss='categorical_crossentropy', name='cnn_search'):
+    model = Sequential(name=name)
+    for block in range(hp['conv_blocks']):
+        first = {'input_shape': (number_of_samples, 1)} if block == 0 else {}
+        model.add(Conv1D(hp['filters'] * 2 ** block, hp['kernel'], padding='same', activation=hp['activation'],
+                         kernel_initializer='he_uniform', **first))
+        model.add(BatchNormalization())
+        model.add(AveragePooling1D(pool_size=hp['pool'], strides=hp['pool']))
+    # Phase 4: hp['gap'] swaps Flatten for global average pooling, which discards sample positions (shift tolerant)
+    model.add(SampleMean() if hp.get('gap') else Flatten())
+    for _ in range(hp['dense_layers']):
+        model.add(Dense(hp['dense_width'], activation=hp['activation'], kernel_initializer='he_uniform'))
+    model.add(Dense(classes, activation='softmax'))
+    model.compile(loss=loss, optimizer=Adam(learning_rate=hp['learning_rate']), metrics=['accuracy'])
+    model.summary()
+    return model

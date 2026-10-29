@@ -1,42 +1,16 @@
-from aisy_sca.crypto.sca_aes_create_intermediates import *
+# AISY early-stopping metric: final guessing entropy on the validation set (Phase 0).
+#
+# Same key rank as every phase (scripts/sca_protocol.py): log-probabilities added over the traces, ties count half,
+# on fixed random subsets so every epoch is compared on the same traces. The earlier version added raw
+# probabilities, which is not AISY's key rank and picks epochs with a weaker rule.
+from scripts.sca_protocol import attack_subsets, ge_sr, key_ranks, key_scores, validation_log_probabilities
+
+VALIDATION_SEED = 1  # subsets of the validation set; the attack set uses the --seed of each phase script
 
 
 def run(dataset, settings, model, *args):
-    nt = len(dataset.x_validation)
-
-    # ---------------------------------------------------------------------------------------------------------#
-    # compute labels for key hypothesis
-    # ---------------------------------------------------------------------------------------------------------#
-    labels_key_hypothesis = np.zeros((256, nt))
-    for key_byte_hypothesis in range(0, 256):
-        key_h = bytearray.fromhex(settings["key"])
-        key_h[settings["leakage_model"]["byte"]] = key_byte_hypothesis
-        labels_key_hypothesis[key_byte_hypothesis][:] = aes_intermediates(dataset.plaintext_validation, dataset.ciphertext_validation,
-                                                                          key_h, settings["leakage_model"])
-
-    good_key = [int(x) for x in bytearray.fromhex(settings["key"])][settings["leakage_model"]["byte"]]
-
-    # ---------------------------------------------------------------------------------------------------------#
-    # predict output probabilities for shuffled test or validation set
-    # ---------------------------------------------------------------------------------------------------------#
-    output_probabilities = model.predict(dataset.x_validation)
-
-    probabilities_kg_all_traces = np.zeros((nt, 256))
-    for index in range(nt):
-        probabilities_kg_all_traces[index] = output_probabilities[index][
-            np.asarray([int(leakage[index]) for leakage in labels_key_hypothesis[:]])  # array with 256 leakage values (1 per key guess)
-        ]
-
-    key_ranking_sum = 0
-    for key_rank_execution in range(settings["key_rank_executions"]):
-        r = np.random.choice(range(nt), settings["key_rank_attack_traces"], replace=False)
-        probabilities_kg_all_traces_shuffled = probabilities_kg_all_traces[r]
-        key_probabilities = np.sum(probabilities_kg_all_traces_shuffled[:settings["key_rank_attack_traces"]], axis=0)
-        key_probabilities_sorted = np.argsort(key_probabilities)[::-1]
-        key_ranking_sum += list(key_probabilities_sorted).index(good_key) + 1
-
-    guessing_entropy = key_ranking_sum / settings["key_rank_executions"]
-
-    print(f"GE = {guessing_entropy}")
-
-    return guessing_entropy
+    log_p, leakage = validation_log_probabilities(dataset, settings, model)
+    scores = key_scores(log_p, dataset.plaintext_validation, leakage["byte"], leakage["leakage_model"])
+    ge, _ = ge_sr(key_ranks(scores, settings["good_key"], attack_subsets(len(scores), VALIDATION_SEED)))
+    print(f"GE = {ge[-1]}")
+    return float(ge[-1])

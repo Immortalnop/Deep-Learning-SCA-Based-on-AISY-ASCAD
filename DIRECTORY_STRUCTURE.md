@@ -90,7 +90,10 @@ The GE/SR curves stay in `databases/database_ascad.sqlite`; `index.csv` links ea
 | `experiments/index.csv` | One row per run: run id, kind, seed, status, start time, duration, AISY analysis ids, folder. |
 | `experiments/phase0_<timestamp>/` | Phase 0 comparison: `runs.csv` (one row per model and seed: status, analysis id, GE, SR, traces to GE < 2), `summary.md` (mean ± std per model), `log.txt`. |
 | `experiments/phase1_<timestamp>/` | Phase 1 SNR analysis: `snr.png`, `snr_vs_traces.png`, `snr.npz`, `peaks.csv`, `summary.md`, `log.txt`. |
-| `experiments/phase2_<timestamp>/` | Phase 2 classic baselines: `ge.png`, `share_correlation.png`, `results.csv`, `curves.npz`, `summary.md`, `log.txt`. |
+| `experiments/phase2_<timestamp>/` | Phase 2 classic baselines: `ge.png`, `share_correlation.png`, `results.csv` (one row per attack: status, GE ± std, SR, traces to GE < 2), `curves.npz`, `summary.md`, `log.txt`. |
+| `experiments/phase3_<timestamp>/` | Phase 3 study: `runs.csv` (one row per training run), `predictions/<run>.npz` (best-epoch log-probabilities, validation and attack), `tensorboard/<run>/`, and from the report stage `ranking.csv`, `ensembles.csv`, `loss.csv`, `ablations.csv`, `ge_best.png`, `ablation_profiling.png`, `summary.md`; one `log_<stage>_<timestamp>.txt` per stage. |
+| `experiments/_archive/phase2_incomplete/` | Phase 2 attempt from 2026-10-23 that stopped after loading (log only, no index row). |
+| `experiments/_archive/phase2_dev/` | Phase 2 development runs from 2026-10-25, made before the final code (no index rows). |
 | `experiments/experiment_<timestamp>_seed<N>/<script>/` | `log.txt` of each script run by `run_experiment.py`. |
 | `experiments/<script>_<timestamp>_seed<N>/` | A core `script_aes*.py` run on its own. |
 | `experiments/_archive/phase0_invalid/` | Phase 0 runs from 2026-10-08 and 2026-10-10. Invalid: wrong attack key (see README, Phase 1). |
@@ -111,7 +114,9 @@ Experiment and model scripts. Each AISY script configures `aisy_sca.Aisy()` and 
 | `run_experiment.py` | Runs the core scripts in sequence with one shared seed; one sub folder and one `index.csv` row per script. |
 | `phase0_compare.py` | Phase 0 comparison: trains the MLP and `cnn_sca_light` with one protocol over several seeds, reads GE/SR from the database and writes `runs.csv` and `summary.md`. |
 | `phase1_snr.py` | Phase 1 leakage analysis: SNR per sample for the unmasked value, masked values and masks; checks the dataset entry; writes plots, peak table and summary. |
-| `phase2_baselines.py` | Phase 2 classic baselines: template attacks (whole-trace PCA, share-point PCA) and CPA (first order, known mask, second order), ranked on the same attack subsets with the Phase 0 GE protocol. |
+| `phase2_baselines.py` | Phase 2 classic baselines: template attacks (whole-trace PCA, share-point PCA; ID and HW classes) and CPA (first order, known mask, second order), ranked on the same attack subsets with the Phase 0 GE protocol. |
+| `sca_protocol.py` | Attack protocol shared by every phase: `PROTOCOL` (split sizes, key rank settings), `load_split` (same traces as AISY), `guess_classes` / `key_scores`, `key_ranks` / `ge_sr` / `ge_area` / `traces_to_threshold`, `validation_log_probabilities` (for the early-stopping metrics), `read_curve` (GE curves from the AISY database), `S_BOX`, `HW`. No TensorFlow import. |
+| `phase3_study.py` | Phase 3 systematic CNN study in stages (`search`, `loss`, `ablate`, `report`, `all`) on one study folder; finished runs are skipped on a rerun. Every run trains in AISY with GE-area early stopping, then its best-epoch log-probabilities are saved and ranked with `sca_protocol.py` on the Phase 2 attack subsets. |
 | `experiment_log.py` | `log_to(path)`: copies everything printed to the console into a log file. Used by the phase scripts. |
 | `experiment_output.py` | One output folder per run: `start_run` makes the folder, `configure_aisy` sets all AISY folders, `finish_run` removes empty AISY folders and writes the `index.csv` row. |
 
@@ -154,16 +159,17 @@ Plug-in modules loaded by AISY.
 
 | Path | Purpose |
 |---|---|
-| `custom_models/neural_networks.py` | Model definitions: `mlp`, `cnn`, `ASCAD_mlp`, `ASCAD_cnn`, methodology CNNs, Zaid et al. models, ranking-loss CNN and our `cnn_sca_light`. |
+| `custom_models/neural_networks.py` | Model definitions: `mlp`, `cnn`, `ASCAD_mlp`, `ASCAD_cnn`, methodology CNNs, Zaid et al. models, ranking-loss CNN, our `cnn_sca_light`, and `cnn_search` (the Phase 3 search family, built from a hyperparameter dict). |
 | `custom_datasets/datasets.py` | `datasets_dict`: file name, attack key, trace counts and number of samples for each dataset. The `ASCAD.h5` entry was fixed in Phase 1 (key and 1,400 samples). |
 | `custom_metrics/accuracy.py` | Accuracy metric. |
 | `custom_metrics/loss.py` | Loss metric. |
-| `custom_metrics/guessing_entropy.py` | Guessing entropy metric. |
+| `custom_metrics/guessing_entropy.py` | Early-stopping metric (Phase 0): final validation GE, with the key rank of `scripts/sca_protocol.py` (log-probabilities, ties count half). |
+| `custom_metrics/ge_area.py` | Early-stopping metric (Phase 3): validation GE area = mean GE over 10–1,000 traces; keeps each epoch's value in `settings["ge_area_history"]`. |
 | `custom_metrics/fast_guessing_entropy.py` | Faster GE estimate on fewer traces. |
 | `custom_metrics/number_of_traces.py` | Number of traces needed to reach a GE target. |
 | `custom_loss/cce.py` | Categorical cross-entropy loss. |
 | `custom_loss/cer.py` | Cross-entropy ratio (CER) loss. |
-| `custom_callbacks/callbacks.py` | Example Keras callbacks and `SaveWeights`. |
+| `custom_callbacks/callbacks.py` | Example Keras callbacks, `SaveWeights`, `PlateauStop` (stops when the early-stopping metric has not improved for N epochs) and `TensorBoardLog` (Keras TensorBoard in AISY's callback form). |
 | `custom_data_augmentation/data_augmentation.py` | Random-shift and Gaussian-noise augmentation generators. |
 | `custom_tables/tables.py` | Example custom SQLAlchemy table. |
 

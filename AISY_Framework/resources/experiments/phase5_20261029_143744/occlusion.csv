@@ -1,0 +1,13 @@
+run,variant,occluded,samples,ge_area,ge_final,reached_ge_lt_2,traces_ge_lt_2
+d0_cnn_s1,cnn,none,0,8.3,1.0,1/1,400.0
+d0_cnn_s1,cnn,peaks,22,12.37,1.01,1/1,570.0
+d0_cnn_s1,cnn,top,22,18.97,1.14,1/1,860.0
+d0_cnn_s1,cnn,random,22,8.26,1.0,5/5,392.0
+d0_cnn_s2,cnn,none,0,7.06,1.0,1/1,340.0
+d0_cnn_s2,cnn,peaks,22,11.81,1.0,1/1,540.0
+d0_cnn_s2,cnn,top,22,16.76,1.21,1/1,790.0
+d0_cnn_s2,cnn,random,22,7.13,1.0,5/5,338.0
+d0_cnn_s3,cnn,none,0,7.39,1.0,1/1,360.0
+d0_cnn_s3,cnn,peaks,22,16.37,1.57,1/1,900.0
+d0_cnn_s3,cnn,top,22,17.6,1.76,1/1,980.0
+d0_cnn_s3,cnn,random,22,7.47,1.0,5/5,356.0

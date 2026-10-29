@@ -1,0 +1,82 @@
+Phase 5, stage saliency: {'stage': 'all', 'study': None, 'phase1': None, 'phase3': None, 'phase4': None, 'variants': ['cnn'], 'seeds': [1], 'levels': [50, 100], 'traces': 2000, 'window': 5, 'random_draws': 5, 'epochs': 50, 'patience': 10, 'aug_shift': 100, 'aug_noise': 0.1, 'subset_seed': 0}
+Protocol: {'dataset': 'ASCAD.h5', 'leakage_model': 'HW', 'byte': 2, 'profiling_traces': 50000, 'attack_traces': 10000, 'key_rank_executions': 100, 'key_rank_attack_traces': 1000, 'key_rank_report_interval': 10}
+SNR from resources/experiments/phase1_20261021_004650: peaks masked value at sample 1071, mask at sample 188
+Model: "d0_cnn_s1"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv1d (Conv1D)             (None, 1400, 16)          416       
+                                                                 
+ batch_normalization (BatchN  (None, 1400, 16)         64        
+ ormalization)                                                   
+                                                                 
+ average_pooling1d (AverageP  (None, 350, 16)          0         
+ ooling1D)                                                       
+                                                                 
+ conv1d_1 (Conv1D)           (None, 350, 32)           12832     
+                                                                 
+ batch_normalization_1 (Batc  (None, 350, 32)          128       
+ hNormalization)                                                 
+                                                                 
+ average_pooling1d_1 (Averag  (None, 87, 32)           0         
+ ePooling1D)                                                     
+                                                                 
+ flatten (Flatten)           (None, 2784)              0         
+                                                                 
+ dense (Dense)               (None, 128)               356480    
+                                                                 
+ dense_1 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_2 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_3 (Dense)             (None, 9)                 1161      
+                                                                 
+=================================================================
+Total params: 404,105
+Trainable params: 404,009
+Non-trainable params: 96
+_________________________________________________________________
+d0_cnn_s1 attack desync 0: {'run': 'd0_cnn_s1', 'variant': 'cnn', 'attack_desync': 0, 'traces': 2000, 'spearman_masked_value': 0.235, 'spearman_mask': 0.143, 'enrichment': 2.91, 'samples_in_windows': 22, 'percentile_at_masked_value_peak': 100.0, 'percentile_at_mask_peak': 99.9}
+d0_cnn_s1 occlusion: {'run': 'd0_cnn_s1', 'variant': 'cnn', 'occluded': 'none', 'samples': 0, 'ge_area': 8.3, 'ge_final': 1.0, 'reached_ge_lt_2': '1/1', 'traces_ge_lt_2': 400.0}
+d0_cnn_s1 occlusion: {'run': 'd0_cnn_s1', 'variant': 'cnn', 'occluded': 'peaks', 'samples': 22, 'ge_area': 12.37, 'ge_final': 1.01, 'reached_ge_lt_2': '1/1', 'traces_ge_lt_2': 570.0}
+d0_cnn_s1 occlusion: {'run': 'd0_cnn_s1', 'variant': 'cnn', 'occluded': 'top', 'samples': 22, 'ge_area': 18.97, 'ge_final': 1.14, 'reached_ge_lt_2': '1/1', 'traces_ge_lt_2': 860.0}
+d0_cnn_s1 occlusion: {'run': 'd0_cnn_s1', 'variant': 'cnn', 'occluded': 'random', 'samples': 22, 'ge_area': 8.26, 'ge_final': 1.0, 'reached_ge_lt_2': '5/5', 'traces_ge_lt_2': 392.0}
+d0_cnn_s1 attack desync 50: {'run': 'd0_cnn_s1', 'variant': 'cnn', 'attack_desync': 50, 'traces': 2000, 'spearman_masked_value': 0.198, 'spearman_mask': 0.13, 'enrichment': 2.26, 'samples_in_windows': 22, 'percentile_at_masked_value_peak': 99.6, 'percentile_at_mask_peak': 100.0}
+d0_cnn_s1 attack desync 100: {'run': 'd0_cnn_s1', 'variant': 'cnn', 'attack_desync': 100, 'traces': 2000, 'spearman_masked_value': 0.179, 'spearman_mask': 0.156, 'enrichment': 2.19, 'samples_in_windows': 22, 'percentile_at_masked_value_peak': 97.9, 'percentile_at_mask_peak': 100.0}
+
+# Phase 5: explainability (2026-10-29 15:00)
+
+Models: Phase 4 desync 0 recipe retrained with the same seed (d0_cnn_s1). Saliency = mean |d log p(correct class) / d sample| over 2000 attack traces. SNR peaks (Phase 1): masked value at sample 1071, mask at sample 188; windows of +-5 samples.
+
+## Retraining against Phase 4 (attack at desync 0)
+
+| run | retrained_ge_area | phase4_ge_area | retrained_traces_ge_lt_2 | phase4_traces_ge_lt_2 |
+|---|---|---|---|---|
+| d0_cnn_s1 | 8.3 | 9.19 | 400 | 430 |
+
+Phase 4 reference: resources/experiments/phase4_20261028_233344. Small differences are expected: CPU training is not bit-exact.
+
+## Overlap of the saliency with the SNR peaks
+
+| run | variant | attack_desync | traces | spearman_masked_value | spearman_mask | enrichment | samples_in_windows | percentile_at_masked_value_peak | percentile_at_mask_peak |
+|---|---|---|---|---|---|---|---|---|---|
+| d0_cnn_s1 | cnn | 0 | 2000 | 0.235 | 0.143 | 2.91 | 22 | 100.0 | 99.9 |
+| d0_cnn_s1 | cnn | 50 | 2000 | 0.198 | 0.13 | 2.26 | 22 | 99.6 | 100.0 |
+| d0_cnn_s1 | cnn | 100 | 2000 | 0.179 | 0.156 | 2.19 | 22 | 97.9 | 100.0 |
+
+## Occlusion (attack at desync 0, mean over random draws for `random`)
+
+| run | variant | occluded | samples | ge_area | ge_final | reached_ge_lt_2 | traces_ge_lt_2 |
+|---|---|---|---|---|---|---|---|
+| d0_cnn_s1 | cnn | none | 0 | 8.3 | 1.0 | 1/1 | 400.0 |
+| d0_cnn_s1 | cnn | peaks | 22 | 12.37 | 1.01 | 1/1 | 570.0 |
+| d0_cnn_s1 | cnn | top | 22 | 18.97 | 1.14 | 1/1 | 860.0 |
+| d0_cnn_s1 | cnn | random | 22 | 8.26 | 1.0 | 5/5 | 392.0 |
+
+## Meaning
+
+- `d0_cnn_s1`: GE area without occlusion 8.3; occluding the SNR peaks 12.37, the same number of top-saliency samples 18.97, random samples 8.26.
+
+Files: `saliency.png`, `occlusion.png`, `saliency.npz`, `overlap.csv`, `occlusion.csv`, `models/`, `runs.csv`, `eval.csv`.
+
+Stage saliency: ok. Results: resources/experiments/phase5_20261029_143744

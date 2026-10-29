@@ -52,6 +52,17 @@ def start_run(kind, seed=None):
     return folder
 
 
+def resume_run(folder):
+    # Continue writing into an existing run folder (a study run in several stages); finish_run adds one index row
+    # per stage.
+    if not os.path.isdir(folder):
+        raise FileNotFoundError(f"run folder not found: {folder}")
+    folder = folder.replace("\\", "/").rstrip("/")
+    _started[folder] = (datetime.now().isoformat(timespec="seconds"), time.time())
+    print(f"RUN_FOLDER = {folder}")
+    return folder
+
+
 def configure_aisy(aisy, folder, database_name="database_ascad.sqlite"):
     aisy.set_resources_root_folder(folder + "/")
     aisy.set_database_root_folder("databases/")

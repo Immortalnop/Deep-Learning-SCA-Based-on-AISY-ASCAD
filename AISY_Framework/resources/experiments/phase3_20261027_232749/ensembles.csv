@@ -1,0 +1,5 @@
+ensemble,members,val_ge_area,val_ge_final,att_ge_area,att_ge_final,att_median_rank,att_sr_final,att_traces_ge_lt_2
+top 1,search_08,17.11,1.55,20.91,1.91,1.0,0.77,1000
+top 3,search_08 search_04 search_03,23.37,3.24,32.39,6.66,2.0,0.41,
+top 5,search_08 search_04 search_03 search_14 search_10,25.35,4.28,48.15,17.27,9.0,0.18,
+top 10,search_08 search_04 search_03 search_14 search_10 search_00 search_16 search_06 search_17 search_18,30.28,6.91,64.37,33.41,22.5,0.07,

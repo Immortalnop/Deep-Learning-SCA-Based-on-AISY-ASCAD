@@ -1,0 +1,890 @@
+Phase 4, stage baseline: {'stage': 'all', 'study': 'resources/experiments/phase4_20261028_233344', 'phase3': None, 'variants': ['mlp', 'cnn', 'cnn_aug', 'cnn_wide', 'cnn_gap'], 'seeds': [2], 'levels': [50, 100], 'epochs': 50, 'patience': 10, 'aug_shift': 100, 'aug_noise': 0.1, 'subset_seed': 0}
+Protocol: {'dataset': 'ASCAD.h5', 'leakage_model': 'HW', 'byte': 2, 'profiling_traces': 50000, 'attack_traces': 10000, 'key_rank_executions': 100, 'key_rank_attack_traces': 1000, 'key_rank_report_interval': 10}
+Phase 3 CNN: cer_search_03 from resources/experiments/phase3_20261027_232749 (validation GE area 8.29, loss cer, hp {"activation": "selu", "batch_size": 256, "conv_blocks": 2, "dense_layers": 3, "dense_width": 128, "filters": 16, "kernel": 25, "learning_rate": 0.0005, "pool": 4})
+
+===== d0_mlp_s2 (mlp, trained on desync 0) =====
+SEED = 2
+Model: "basic_mlp"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense (Dense)               (None, 200)               280200    
+                                                                 
+ dense_1 (Dense)             (None, 200)               40200     
+                                                                 
+ dense_2 (Dense)             (None, 200)               40200     
+                                                                 
+ dense_3 (Dense)             (None, 200)               40200     
+                                                                 
+ dense_4 (Dense)             (None, 9)                 1809      
+                                                                 
+=================================================================
+Total params: 402,609
+Trainable params: 402,609
+Non-trainable params: 0
+_________________________________________________________________
+WARNING:absl:`lr` is deprecated, please use `learning_rate` instead, or use the legacy optimizer, e.g.,tf.keras.optimizers.legacy.Adam.
+Model: "basic_mlp"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense (Dense)               (None, 200)               280200    
+                                                                 
+ dense_1 (Dense)             (None, 200)               40200     
+                                                                 
+ dense_2 (Dense)             (None, 200)               40200     
+                                                                 
+ dense_3 (Dense)             (None, 200)               40200     
+                                                                 
+ dense_4 (Dense)             (None, 9)                 1809      
+                                                                 
+=================================================================
+Total params: 402,609
+Trainable params: 402,609
+Non-trainable params: 0
+_________________________________________________________________
+Epoch 1/50
+WARNING:tensorflow:AutoGraph could not transform <function Model.make_train_function.<locals>.train_function at 0x000002202FA9CAF8> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: 'arguments' object has no attribute 'posonlyargs'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+WARNING:tensorflow:AutoGraph could not transform <function Model.make_test_function.<locals>.test_function at 0x00000220455E2A68> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: 'arguments' object has no attribute 'posonlyargs'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+WARNING:tensorflow:AutoGraph could not transform <function Model.make_predict_function.<locals>.predict_function at 0x000002202E1D1D38> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: 'arguments' object has no attribute 'posonlyargs'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+Validation GE area = 110.77 (final GE 104.00)
+[34m
+Model saved ge_area = 110.7697 at epoch 1
+[0m
+391/391 - 4s - loss: 1.9380 - accuracy: 0.2338 - val_loss: 1.8662 - val_accuracy: 0.2342 - 4s/epoch - 10ms/step
+Epoch 2/50
+Validation GE area = 91.15 (final GE 70.40)
+[34m
+Model saved ge_area = 91.15484999999998 at epoch 2
+[0m
+391/391 - 3s - loss: 1.8121 - accuracy: 0.2554 - val_loss: 1.8337 - val_accuracy: 0.2188 - 3s/epoch - 7ms/step
+Epoch 3/50
+Validation GE area = 80.74 (final GE 61.07)
+[34m
+Model saved ge_area = 80.7375 at epoch 3
+[0m
+391/391 - 3s - loss: 1.7736 - accuracy: 0.2664 - val_loss: 1.8083 - val_accuracy: 0.2646 - 3s/epoch - 8ms/step
+Epoch 4/50
+Validation GE area = 51.66 (final GE 23.11)
+[34m
+Model saved ge_area = 51.66090000000001 at epoch 4
+[0m
+391/391 - 3s - loss: 1.7429 - accuracy: 0.2776 - val_loss: 1.8068 - val_accuracy: 0.2614 - 3s/epoch - 7ms/step
+Epoch 5/50
+Validation GE area = 35.72 (final GE 10.51)
+[34m
+Model saved ge_area = 35.71855000000001 at epoch 5
+[0m
+391/391 - 3s - loss: 1.7108 - accuracy: 0.2952 - val_loss: 1.8338 - val_accuracy: 0.2606 - 3s/epoch - 8ms/step
+Epoch 6/50
+Validation GE area = 52.82 (final GE 28.05)
+391/391 - 4s - loss: 1.6740 - accuracy: 0.3092 - val_loss: 1.8328 - val_accuracy: 0.2514 - 4s/epoch - 9ms/step
+Epoch 7/50
+Validation GE area = 50.03 (final GE 21.93)
+391/391 - 5s - loss: 1.6266 - accuracy: 0.3337 - val_loss: 1.8917 - val_accuracy: 0.2652 - 5s/epoch - 14ms/step
+Epoch 8/50
+Validation GE area = 47.12 (final GE 18.89)
+391/391 - 5s - loss: 1.5753 - accuracy: 0.3528 - val_loss: 1.9655 - val_accuracy: 0.2460 - 5s/epoch - 14ms/step
+Epoch 9/50
+Validation GE area = 39.43 (final GE 13.25)
+391/391 - 5s - loss: 1.5120 - accuracy: 0.3847 - val_loss: 1.9925 - val_accuracy: 0.2400 - 5s/epoch - 13ms/step
+Epoch 10/50
+Validation GE area = 50.93 (final GE 19.74)
+391/391 - 6s - loss: 1.4401 - accuracy: 0.4139 - val_loss: 2.1628 - val_accuracy: 0.2390 - 6s/epoch - 14ms/step
+Epoch 11/50
+Validation GE area = 43.38 (final GE 16.55)
+391/391 - 6s - loss: 1.3638 - accuracy: 0.4455 - val_loss: 2.2883 - val_accuracy: 0.2368 - 6s/epoch - 15ms/step
+Epoch 12/50
+Validation GE area = 60.64 (final GE 30.10)
+391/391 - 6s - loss: 1.2748 - accuracy: 0.4836 - val_loss: 2.4351 - val_accuracy: 0.2356 - 6s/epoch - 15ms/step
+Epoch 13/50
+Validation GE area = 54.94 (final GE 26.91)
+391/391 - 6s - loss: 1.2075 - accuracy: 0.5126 - val_loss: 2.6026 - val_accuracy: 0.2500 - 6s/epoch - 16ms/step
+Epoch 14/50
+Validation GE area = 41.51 (final GE 12.58)
+391/391 - 6s - loss: 1.1405 - accuracy: 0.5433 - val_loss: 2.7985 - val_accuracy: 0.2246 - 6s/epoch - 14ms/step
+Epoch 15/50
+Validation GE area = 54.70 (final GE 28.04)
+PlateauStop: no improvement for 10 epochs, stopped after epoch 15
+391/391 - 5s - loss: 1.0739 - accuracy: 0.5676 - val_loss: 3.0459 - val_accuracy: 0.2272 - 5s/epoch - 12ms/step
+  1/157 [..............................] - ETA: 15s 23/157 [===>..........................] - ETA: 0s  34/157 [=====>........................] - ETA: 0s 52/157 [========>.....................] - ETA: 0s 73/157 [============>.................] - ETA: 0s 94/157 [================>.............] - ETA: 0s111/157 [====================>.........] - ETA: 0s123/157 [======================>.......] - ETA: 0s138/157 [=========================>....] - ETA: 0s153/157 [============================>.] - ETA: 0s157/157 [==============================] - 1s 3ms/step
+GE = 14.06
+SR = 0.25
+  1/157 [..............................] - ETA: 10s 11/157 [=>............................] - ETA: 0s  19/157 [==>...........................] - ETA: 0s 32/157 [=====>........................] - ETA: 0s 49/157 [========>.....................] - ETA: 0s 74/157 [=============>................] - ETA: 0s 92/157 [================>.............] - ETA: 0s112/157 [====================>.........] - ETA: 0s120/157 [=====================>........] - ETA: 0s128/157 [=======================>......] - ETA: 0s144/157 [==========================>...] - ETA: 0s157/157 [==============================] - 1s 4ms/step
+GE = 30.89
+SR = 0.1
+resources/experiments/phase4_20261028_233344/models/best_model_ge_area_1793248887834634.h5
+[32mComputing Guessing Entropy and Success Rate for Attack Set[0m
+  1/157 [..............................] - ETA: 6s 18/157 [==>...........................] - ETA: 0s 28/157 [====>.........................] - ETA: 0s 38/157 [======>.......................] - ETA: 0s 49/157 [========>.....................] - ETA: 0s 58/157 [==========>...................] - ETA: 0s 70/157 [============>.................] - ETA: 0s 82/157 [==============>...............] - ETA: 0s 97/157 [=================>............] - ETA: 0s113/157 [====================>.........] - ETA: 0s132/157 [========================>.....] - ETA: 0s147/157 [===========================>..] - ETA: 0s157/157 [==============================] - 1s 4ms/step
+GE = 19.63
+SR = 0.23
+[32mComputing Guessing Entropy and Success Rate for Validation Set[0m
+  1/157 [..............................] - ETA: 10s 14/157 [=>............................] - ETA: 0s  31/157 [====>.........................] - ETA: 0s 50/157 [========>.....................] - ETA: 0s 68/157 [===========>..................] - ETA: 0s 80/157 [==============>...............] - ETA: 0s 93/157 [================>.............] - ETA: 0s105/157 [===================>..........] - ETA: 0s121/157 [======================>.......] - ETA: 0s138/157 [=========================>....] - ETA: 0s152/157 [============================>.] - ETA: 0s157/157 [==============================] - 1s 3ms/step
+GE = 7.26
+SR = 0.44
+d0_mlp_s2: ok, validation GE area 35.72; desync 0: GE 20.61, traces to GE < 2 not reached; desync 50: GE 116.77, traces to GE < 2 not reached; desync 100: GE 122.36, traces to GE < 2 not reached; 99.0 s
+
+===== d0_cnn_s2 (cnn, trained on desync 0) =====
+SEED = 2
+Model: "d0_cnn_s2"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv1d (Conv1D)             (None, 1400, 16)          416       
+                                                                 
+ batch_normalization (BatchN  (None, 1400, 16)         64        
+ ormalization)                                                   
+                                                                 
+ average_pooling1d (AverageP  (None, 350, 16)          0         
+ ooling1D)                                                       
+                                                                 
+ conv1d_1 (Conv1D)           (None, 350, 32)           12832     
+                                                                 
+ batch_normalization_1 (Batc  (None, 350, 32)          128       
+ hNormalization)                                                 
+                                                                 
+ average_pooling1d_1 (Averag  (None, 87, 32)           0         
+ ePooling1D)                                                     
+                                                                 
+ flatten (Flatten)           (None, 2784)              0         
+                                                                 
+ dense (Dense)               (None, 128)               356480    
+                                                                 
+ dense_1 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_2 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_3 (Dense)             (None, 9)                 1161      
+                                                                 
+=================================================================
+Total params: 404,105
+Trainable params: 404,009
+Non-trainable params: 96
+_________________________________________________________________
+Model: "d0_cnn_s2"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv1d (Conv1D)             (None, 1400, 16)          416       
+                                                                 
+ batch_normalization (BatchN  (None, 1400, 16)         64        
+ ormalization)                                                   
+                                                                 
+ average_pooling1d (AverageP  (None, 350, 16)          0         
+ ooling1D)                                                       
+                                                                 
+ conv1d_1 (Conv1D)           (None, 350, 32)           12832     
+                                                                 
+ batch_normalization_1 (Batc  (None, 350, 32)          128       
+ hNormalization)                                                 
+                                                                 
+ average_pooling1d_1 (Averag  (None, 87, 32)           0         
+ ePooling1D)                                                     
+                                                                 
+ flatten (Flatten)           (None, 2784)              0         
+                                                                 
+ dense (Dense)               (None, 128)               356480    
+                                                                 
+ dense_1 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_2 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_3 (Dense)             (None, 9)                 1161      
+                                                                 
+=================================================================
+Total params: 404,105
+Trainable params: 404,009
+Non-trainable params: 96
+_________________________________________________________________
+Epoch 1/50
+WARNING:tensorflow:AutoGraph could not transform <function Model.make_train_function.<locals>.train_function at 0x00000220479025E8> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: 'arguments' object has no attribute 'posonlyargs'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+WARNING:tensorflow:AutoGraph could not transform <function cer_loss.<locals>.cer at 0x00000220479461F8> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: module 'gast' has no attribute 'Constant'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+WARNING:tensorflow:AutoGraph could not transform <function Model.make_test_function.<locals>.test_function at 0x000002204792CDC8> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: 'arguments' object has no attribute 'posonlyargs'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+WARNING:tensorflow:AutoGraph could not transform <function Model.make_predict_function.<locals>.predict_function at 0x000002202FAF13A8> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: 'arguments' object has no attribute 'posonlyargs'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+Validation GE area = 128.83 (final GE 126.18)
+[34m
+Model saved ge_area = 128.8268 at epoch 1
+[0m
+196/196 - 36s - loss: 1.0140 - accuracy: 0.0508 - val_loss: 1.0024 - val_accuracy: 0.0244 - 36s/epoch - 182ms/step
+Epoch 2/50
+Validation GE area = 114.99 (final GE 107.38)
+[34m
+Model saved ge_area = 114.98895 at epoch 2
+[0m
+196/196 - 34s - loss: 1.0011 - accuracy: 0.0259 - val_loss: 0.9993 - val_accuracy: 0.0276 - 34s/epoch - 174ms/step
+Epoch 3/50
+Validation GE area = 58.25 (final GE 30.25)
+[34m
+Model saved ge_area = 58.25125 at epoch 3
+[0m
+196/196 - 34s - loss: 0.9925 - accuracy: 0.0331 - val_loss: 0.9918 - val_accuracy: 0.0334 - 34s/epoch - 172ms/step
+Epoch 4/50
+Validation GE area = 44.60 (final GE 15.12)
+[34m
+Model saved ge_area = 44.59889999999999 at epoch 4
+[0m
+196/196 - 35s - loss: 0.9823 - accuracy: 0.0420 - val_loss: 0.9851 - val_accuracy: 0.0778 - 35s/epoch - 177ms/step
+Epoch 5/50
+Validation GE area = 25.51 (final GE 3.78)
+[34m
+Model saved ge_area = 25.512650000000004 at epoch 5
+[0m
+196/196 - 34s - loss: 0.9757 - accuracy: 0.0683 - val_loss: 0.9720 - val_accuracy: 0.0368 - 34s/epoch - 173ms/step
+Epoch 6/50
+Validation GE area = 16.21 (final GE 1.20)
+[34m
+Model saved ge_area = 16.2146 at epoch 6
+[0m
+196/196 - 34s - loss: 0.9643 - accuracy: 0.0534 - val_loss: 0.9645 - val_accuracy: 0.0616 - 34s/epoch - 172ms/step
+Epoch 7/50
+Validation GE area = 9.15 (final GE 1.03)
+[34m
+Model saved ge_area = 9.15255 at epoch 7
+[0m
+196/196 - 35s - loss: 0.9579 - accuracy: 0.0622 - val_loss: 0.9546 - val_accuracy: 0.0744 - 35s/epoch - 180ms/step
+Epoch 8/50
+Validation GE area = 10.04 (final GE 1.01)
+196/196 - 35s - loss: 0.9426 - accuracy: 0.0648 - val_loss: 0.9544 - val_accuracy: 0.0830 - 35s/epoch - 180ms/step
+Epoch 9/50
+Validation GE area = 9.66 (final GE 1.00)
+196/196 - 37s - loss: 0.9386 - accuracy: 0.0612 - val_loss: 0.9466 - val_accuracy: 0.0490 - 37s/epoch - 188ms/step
+Epoch 10/50
+Validation GE area = 12.54 (final GE 1.06)
+196/196 - 34s - loss: 0.9275 - accuracy: 0.0659 - val_loss: 0.9492 - val_accuracy: 0.0586 - 34s/epoch - 173ms/step
+Epoch 11/50
+Validation GE area = 7.14 (final GE 1.00)
+[34m
+Model saved ge_area = 7.140699999999999 at epoch 11
+[0m
+196/196 - 33s - loss: 0.9179 - accuracy: 0.0699 - val_loss: 0.9467 - val_accuracy: 0.0646 - 33s/epoch - 166ms/step
+Epoch 12/50
+Validation GE area = 9.47 (final GE 1.01)
+196/196 - 33s - loss: 0.9064 - accuracy: 0.0980 - val_loss: 0.9640 - val_accuracy: 0.0714 - 33s/epoch - 168ms/step
+Epoch 13/50
+Validation GE area = 10.25 (final GE 1.03)
+196/196 - 33s - loss: 0.8933 - accuracy: 0.0996 - val_loss: 0.9659 - val_accuracy: 0.0958 - 33s/epoch - 168ms/step
+Epoch 14/50
+Validation GE area = 7.63 (final GE 1.00)
+196/196 - 33s - loss: 0.8889 - accuracy: 0.1050 - val_loss: 0.9372 - val_accuracy: 0.0824 - 33s/epoch - 168ms/step
+Epoch 15/50
+Validation GE area = 6.57 (final GE 1.00)
+[34m
+Model saved ge_area = 6.5745000000000005 at epoch 15
+[0m
+196/196 - 33s - loss: 0.8617 - accuracy: 0.1384 - val_loss: 0.9276 - val_accuracy: 0.1094 - 33s/epoch - 166ms/step
+Epoch 16/50
+Validation GE area = 8.11 (final GE 1.01)
+196/196 - 34s - loss: 0.8432 - accuracy: 0.1531 - val_loss: 0.9468 - val_accuracy: 0.1356 - 34s/epoch - 175ms/step
+Epoch 17/50
+Validation GE area = 6.59 (final GE 1.00)
+196/196 - 34s - loss: 0.8254 - accuracy: 0.1680 - val_loss: 0.9296 - val_accuracy: 0.1158 - 34s/epoch - 172ms/step
+Epoch 18/50
+Validation GE area = 5.99 (final GE 1.00)
+[34m
+Model saved ge_area = 5.9859 at epoch 18
+[0m
+196/196 - 34s - loss: 0.8069 - accuracy: 0.1911 - val_loss: 0.9181 - val_accuracy: 0.1622 - 34s/epoch - 174ms/step
+Epoch 19/50
+Validation GE area = 8.79 (final GE 1.00)
+196/196 - 34s - loss: 0.7783 - accuracy: 0.2072 - val_loss: 0.9529 - val_accuracy: 0.1426 - 34s/epoch - 174ms/step
+Epoch 20/50
+Validation GE area = 6.32 (final GE 1.00)
+196/196 - 34s - loss: 0.7516 - accuracy: 0.2250 - val_loss: 0.9406 - val_accuracy: 0.1614 - 34s/epoch - 173ms/step
+Epoch 21/50
+Validation GE area = 8.39 (final GE 1.01)
+196/196 - 35s - loss: 0.7108 - accuracy: 0.2490 - val_loss: 0.9818 - val_accuracy: 0.1690 - 35s/epoch - 181ms/step
+Epoch 22/50
+Validation GE area = 7.57 (final GE 1.00)
+196/196 - 33s - loss: 0.6830 - accuracy: 0.2702 - val_loss: 0.9441 - val_accuracy: 0.1626 - 33s/epoch - 171ms/step
+Epoch 23/50
+Validation GE area = 7.37 (final GE 1.00)
+196/196 - 34s - loss: 0.6435 - accuracy: 0.2915 - val_loss: 0.9381 - val_accuracy: 0.1838 - 34s/epoch - 176ms/step
+Epoch 24/50
+Validation GE area = 6.60 (final GE 1.00)
+196/196 - 35s - loss: 0.6090 - accuracy: 0.3139 - val_loss: 0.9433 - val_accuracy: 0.1826 - 35s/epoch - 180ms/step
+Epoch 25/50
+Validation GE area = 7.29 (final GE 1.00)
+196/196 - 36s - loss: 0.5780 - accuracy: 0.3377 - val_loss: 0.9363 - val_accuracy: 0.1812 - 36s/epoch - 184ms/step
+Epoch 26/50
+Validation GE area = 6.85 (final GE 1.00)
+196/196 - 32s - loss: 0.5428 - accuracy: 0.3584 - val_loss: 0.9428 - val_accuracy: 0.1942 - 32s/epoch - 164ms/step
+Epoch 27/50
+Validation GE area = 7.40 (final GE 1.00)
+196/196 - 32s - loss: 0.4990 - accuracy: 0.3871 - val_loss: 0.9531 - val_accuracy: 0.1894 - 32s/epoch - 165ms/step
+Epoch 28/50
+Validation GE area = 8.18 (final GE 1.00)
+PlateauStop: no improvement for 10 epochs, stopped after epoch 28
+196/196 - 32s - loss: 0.4668 - accuracy: 0.4094 - val_loss: 0.9344 - val_accuracy: 0.1956 - 32s/epoch - 166ms/step
+  1/157 [..............................] - ETA: 18s  8/157 [>.............................] - ETA: 1s  15/157 [=>............................] - ETA: 1s 21/157 [===>..........................] - ETA: 1s 27/157 [====>.........................] - ETA: 1s 33/157 [=====>........................] - ETA: 1s 39/157 [======>.......................] - ETA: 0s 45/157 [=======>......................] - ETA: 0s 51/157 [========>.....................] - ETA: 0s 56/157 [=========>....................] - ETA: 0s 62/157 [==========>...................] - ETA: 0s 68/157 [===========>..................] - ETA: 0s 74/157 [=============>................] - ETA: 0s 79/157 [==============>...............] - ETA: 0s 84/157 [===============>..............] - ETA: 0s 89/157 [================>.............] - ETA: 0s 94/157 [================>.............] - ETA: 0s100/157 [==================>...........] - ETA: 0s105/157 [===================>..........] - ETA: 0s110/157 [====================>.........] - ETA: 0s115/157 [====================>.........] - ETA: 0s120/157 [=====================>........] - ETA: 0s125/157 [======================>.......] - ETA: 0s130/157 [=======================>......] - ETA: 0s135/157 [========================>.....] - ETA: 0s140/157 [=========================>....] - ETA: 0s145/157 [==========================>...] - ETA: 0s150/157 [===========================>..] - ETA: 0s155/157 [============================>.] - ETA: 0s157/157 [==============================] - 2s 10ms/step
+GE = 1.0
+SR = 1.0
+Number of traces to reach GE = 1: 430
+  1/157 [..............................] - ETA: 16s  4/157 [..............................] - ETA: 2s   8/157 [>.............................] - ETA: 2s 14/157 [=>............................] - ETA: 1s 22/157 [===>..........................] - ETA: 1s 29/157 [====>.........................] - ETA: 1s 36/157 [=====>........................] - ETA: 1s 44/157 [=======>......................] - ETA: 0s 52/157 [========>.....................] - ETA: 0s 59/157 [==========>...................] - ETA: 0s 67/157 [===========>..................] - ETA: 0s 75/157 [=============>................] - ETA: 0s 81/157 [==============>...............] - ETA: 0s 86/157 [===============>..............] - ETA: 0s 93/157 [================>.............] - ETA: 0s101/157 [==================>...........] - ETA: 0s109/157 [===================>..........] - ETA: 0s116/157 [=====================>........] - ETA: 0s123/157 [======================>.......] - ETA: 0s130/157 [=======================>......] - ETA: 0s136/157 [========================>.....] - ETA: 0s142/157 [==========================>...] - ETA: 0s148/157 [===========================>..] - ETA: 0s154/157 [============================>.] - ETA: 0s157/157 [==============================] - 1s 8ms/step
+GE = 1.0
+SR = 1.0
+Number of traces to reach GE = 1: 370
+resources/experiments/phase4_20261028_233344/models/best_model_ge_area_1793248987077251.h5
+[32mComputing Guessing Entropy and Success Rate for Attack Set[0m
+  1/157 [..............................] - ETA: 12s  5/157 [..............................] - ETA: 2s   9/157 [>.............................] - ETA: 2s 13/157 [=>............................] - ETA: 2s 18/157 [==>...........................] - ETA: 1s 22/157 [===>..........................] - ETA: 1s 26/157 [===>..........................] - ETA: 1s 30/157 [====>.........................] - ETA: 1s 34/157 [=====>........................] - ETA: 1s 38/157 [======>.......................] - ETA: 1s 42/157 [=======>......................] - ETA: 1s 46/157 [=======>......................] - ETA: 1s 51/157 [========>.....................] - ETA: 1s 55/157 [=========>....................] - ETA: 1s 59/157 [==========>...................] - ETA: 1s 64/157 [===========>..................] - ETA: 1s 72/157 [============>.................] - ETA: 1s 80/157 [==============>...............] - ETA: 0s 87/157 [===============>..............] - ETA: 0s 93/157 [================>.............] - ETA: 0s 97/157 [=================>............] - ETA: 0s101/157 [==================>...........] - ETA: 0s105/157 [===================>..........] - ETA: 0s109/157 [===================>..........] - ETA: 0s115/157 [====================>.........] - ETA: 0s121/157 [======================>.......] - ETA: 0s126/157 [=======================>......] - ETA: 0s132/157 [========================>.....] - ETA: 0s139/157 [=========================>....] - ETA: 0s144/157 [==========================>...] - ETA: 0s148/157 [===========================>..] - ETA: 0s152/157 [============================>.] - ETA: 0s156/157 [============================>.] - ETA: 0s157/157 [==============================] - 2s 12ms/step
+GE = 1.0
+SR = 1.0
+Number of traces to reach GE = 1: 350
+[32mComputing Guessing Entropy and Success Rate for Validation Set[0m
+  1/157 [..............................] - ETA: 10s  7/157 [>.............................] - ETA: 1s  14/157 [=>............................] - ETA: 1s 20/157 [==>...........................] - ETA: 1s 25/157 [===>..........................] - ETA: 1s 29/157 [====>.........................] - ETA: 1s 33/157 [=====>........................] - ETA: 1s 40/157 [======>.......................] - ETA: 1s 48/157 [========>.....................] - ETA: 1s 56/157 [=========>....................] - ETA: 0s 63/157 [===========>..................] - ETA: 0s 68/157 [===========>..................] - ETA: 0s 72/157 [============>.................] - ETA: 0s 76/157 [=============>................] - ETA: 0s 82/157 [==============>...............] - ETA: 0s 90/157 [================>.............] - ETA: 0s 98/157 [=================>............] - ETA: 0s106/157 [===================>..........] - ETA: 0s113/157 [====================>.........] - ETA: 0s121/157 [======================>.......] - ETA: 0s129/157 [=======================>......] - ETA: 0s137/157 [=========================>....] - ETA: 0s145/157 [==========================>...] - ETA: 0s153/157 [============================>.] - ETA: 0s157/157 [==============================] - 1s 8ms/step
+GE = 1.0
+SR = 1.0
+Number of traces to reach GE = 1: 310
+d0_cnn_s2: ok, validation GE area 5.99; desync 0: GE 1.0, traces to GE < 2 350; desync 50: GE 119.09, traces to GE < 2 not reached; desync 100: GE 128.66, traces to GE < 2 not reached; 977.4 s
+
+===== d0_cnn_aug_s2 (cnn_aug, trained on desync 0) =====
+SEED = 2
+Model: "d0_cnn_aug_s2"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv1d (Conv1D)             (None, 1400, 16)          416       
+                                                                 
+ batch_normalization (BatchN  (None, 1400, 16)         64        
+ ormalization)                                                   
+                                                                 
+ average_pooling1d (AverageP  (None, 350, 16)          0         
+ ooling1D)                                                       
+                                                                 
+ conv1d_1 (Conv1D)           (None, 350, 32)           12832     
+                                                                 
+ batch_normalization_1 (Batc  (None, 350, 32)          128       
+ hNormalization)                                                 
+                                                                 
+ average_pooling1d_1 (Averag  (None, 87, 32)           0         
+ ePooling1D)                                                     
+                                                                 
+ flatten (Flatten)           (None, 2784)              0         
+                                                                 
+ dense (Dense)               (None, 128)               356480    
+                                                                 
+ dense_1 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_2 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_3 (Dense)             (None, 9)                 1161      
+                                                                 
+=================================================================
+Total params: 404,105
+Trainable params: 404,009
+Non-trainable params: 96
+_________________________________________________________________
+Augmentation: random shifts up to 100 samples, Gaussian noise 0.1
+Model: "d0_cnn_aug_s2"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv1d (Conv1D)             (None, 1400, 16)          416       
+                                                                 
+ batch_normalization (BatchN  (None, 1400, 16)         64        
+ ormalization)                                                   
+                                                                 
+ average_pooling1d (AverageP  (None, 350, 16)          0         
+ ooling1D)                                                       
+                                                                 
+ conv1d_1 (Conv1D)           (None, 350, 32)           12832     
+                                                                 
+ batch_normalization_1 (Batc  (None, 350, 32)          128       
+ hNormalization)                                                 
+                                                                 
+ average_pooling1d_1 (Averag  (None, 87, 32)           0         
+ ePooling1D)                                                     
+                                                                 
+ flatten (Flatten)           (None, 2784)              0         
+                                                                 
+ dense (Dense)               (None, 128)               356480    
+                                                                 
+ dense_1 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_2 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_3 (Dense)             (None, 9)                 1161      
+                                                                 
+=================================================================
+Total params: 404,105
+Trainable params: 404,009
+Non-trainable params: 96
+_________________________________________________________________
+C:\Users\Aarush Mohan Mathur\OneDrive\Desktop\projects\Deep Learning SCA group 30\aisy_env\lib\site-packages\aisy_sca\sca\Profiling.py:76: UserWarning: `Model.fit_generator` is deprecated and will be removed in a future version. Please use `Model.fit`, which supports generators.
+  callbacks=callbacks)
+Epoch 1/50
+WARNING:tensorflow:AutoGraph could not transform <function Model.make_train_function.<locals>.train_function at 0x0000022043E84168> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: 'arguments' object has no attribute 'posonlyargs'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+WARNING:tensorflow:AutoGraph could not transform <function cer_loss.<locals>.cer at 0x0000022045450798> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: module 'gast' has no attribute 'Constant'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+WARNING:tensorflow:AutoGraph could not transform <function Model.make_test_function.<locals>.test_function at 0x000002204543DEE8> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: 'arguments' object has no attribute 'posonlyargs'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+WARNING:tensorflow:AutoGraph could not transform <function Model.make_predict_function.<locals>.predict_function at 0x00000220483D8168> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: 'arguments' object has no attribute 'posonlyargs'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+Validation GE area = 122.35 (final GE 119.22)
+[34m
+Model saved ge_area = 122.3519 at epoch 1
+[0m
+195/195 - 37s - loss: 1.0139 - accuracy: 0.0410 - val_loss: 1.0141 - val_accuracy: 0.0306 - 37s/epoch - 190ms/step
+Epoch 2/50
+Validation GE area = 108.39 (final GE 95.01)
+[34m
+Model saved ge_area = 108.38610000000003 at epoch 2
+[0m
+195/195 - 35s - loss: 1.0048 - accuracy: 0.0180 - val_loss: 1.0001 - val_accuracy: 0.0224 - 35s/epoch - 180ms/step
+Epoch 3/50
+Validation GE area = 94.61 (final GE 73.12)
+[34m
+Model saved ge_area = 94.6108 at epoch 3
+[0m
+195/195 - 35s - loss: 1.0024 - accuracy: 0.0167 - val_loss: 0.9977 - val_accuracy: 0.0216 - 35s/epoch - 178ms/step
+Epoch 4/50
+Validation GE area = 125.05 (final GE 121.38)
+195/195 - 35s - loss: 1.0018 - accuracy: 0.0173 - val_loss: 1.0012 - val_accuracy: 0.0162 - 35s/epoch - 181ms/step
+Epoch 5/50
+Validation GE area = 114.75 (final GE 105.54)
+195/195 - 38s - loss: 1.0029 - accuracy: 0.0159 - val_loss: 1.0007 - val_accuracy: 0.0202 - 38s/epoch - 193ms/step
+Epoch 6/50
+Validation GE area = 108.64 (final GE 97.46)
+195/195 - 58s - loss: 1.0011 - accuracy: 0.0146 - val_loss: 1.0012 - val_accuracy: 0.0130 - 58s/epoch - 300ms/step
+Epoch 7/50
+Validation GE area = 104.27 (final GE 85.36)
+195/195 - 68s - loss: 1.0003 - accuracy: 0.0133 - val_loss: 1.0007 - val_accuracy: 0.0098 - 68s/epoch - 349ms/step
+Epoch 8/50
+Validation GE area = 121.74 (final GE 122.52)
+195/195 - 55s - loss: 1.0004 - accuracy: 0.0107 - val_loss: 1.0008 - val_accuracy: 0.0056 - 55s/epoch - 282ms/step
+Epoch 9/50
+Validation GE area = 120.89 (final GE 118.94)
+195/195 - 55s - loss: 0.9995 - accuracy: 0.0082 - val_loss: 1.0008 - val_accuracy: 0.0046 - 55s/epoch - 281ms/step
+Epoch 10/50
+Validation GE area = 114.67 (final GE 109.24)
+195/195 - 39s - loss: 0.9996 - accuracy: 0.0058 - val_loss: 1.0000 - val_accuracy: 0.0048 - 39s/epoch - 198ms/step
+Epoch 11/50
+Validation GE area = 129.23 (final GE 131.69)
+195/195 - 36s - loss: 0.9990 - accuracy: 0.0048 - val_loss: 1.0009 - val_accuracy: 0.0038 - 36s/epoch - 186ms/step
+Epoch 12/50
+Validation GE area = 126.97 (final GE 124.71)
+195/195 - 36s - loss: 0.9982 - accuracy: 0.0056 - val_loss: 1.0034 - val_accuracy: 0.0040 - 36s/epoch - 185ms/step
+Epoch 13/50
+Validation GE area = 108.28 (final GE 96.26)
+PlateauStop: no improvement for 10 epochs, stopped after epoch 13
+195/195 - 36s - loss: 0.9985 - accuracy: 0.0051 - val_loss: 0.9987 - val_accuracy: 0.0050 - 36s/epoch - 182ms/step
+  1/157 [..............................] - ETA: 17s  8/157 [>.............................] - ETA: 1s  14/157 [=>............................] - ETA: 1s 21/157 [===>..........................] - ETA: 1s 27/157 [====>.........................] - ETA: 1s 33/157 [=====>........................] - ETA: 1s 39/157 [======>.......................] - ETA: 0s 45/157 [=======>......................] - ETA: 0s 51/157 [========>.....................] - ETA: 0s 57/157 [=========>....................] - ETA: 0s 63/157 [===========>..................] - ETA: 0s 68/157 [===========>..................] - ETA: 0s 73/157 [============>.................] - ETA: 0s 78/157 [=============>................] - ETA: 0s 83/157 [==============>...............] - ETA: 0s 88/157 [===============>..............] - ETA: 0s 94/157 [================>.............] - ETA: 0s 99/157 [=================>............] - ETA: 0s105/157 [===================>..........] - ETA: 0s111/157 [====================>.........] - ETA: 0s117/157 [=====================>........] - ETA: 0s123/157 [======================>.......] - ETA: 0s129/157 [=======================>......] - ETA: 0s134/157 [========================>.....] - ETA: 0s140/157 [=========================>....] - ETA: 0s146/157 [==========================>...] - ETA: 0s152/157 [============================>.] - ETA: 0s157/157 [==============================] - 2s 9ms/step
+GE = 98.16
+SR = 0.0
+  1/157 [..............................] - ETA: 13s  4/157 [..............................] - ETA: 3s   7/157 [>.............................] - ETA: 2s 13/157 [=>............................] - ETA: 2s 20/157 [==>...........................] - ETA: 1s 27/157 [====>.........................] - ETA: 1s 35/157 [=====>........................] - ETA: 1s 43/157 [=======>......................] - ETA: 1s 51/157 [========>.....................] - ETA: 0s 59/157 [==========>...................] - ETA: 0s 65/157 [===========>..................] - ETA: 0s 72/157 [============>.................] - ETA: 0s 79/157 [==============>...............] - ETA: 0s 87/157 [===============>..............] - ETA: 0s 95/157 [=================>............] - ETA: 0s102/157 [==================>...........] - ETA: 0s110/157 [====================>.........] - ETA: 0s118/157 [=====================>........] - ETA: 0s125/157 [======================>.......] - ETA: 0s132/157 [========================>.....] - ETA: 0s139/157 [=========================>....] - ETA: 0s146/157 [==========================>...] - ETA: 0s152/157 [============================>.] - ETA: 0s157/157 [==============================] - 1s 8ms/step
+GE = 109.12
+SR = 0.0
+resources/experiments/phase4_20261028_233344/models/best_model_ge_area_17932499642949567.h5
+[32mComputing Guessing Entropy and Success Rate for Attack Set[0m
+  1/157 [..............................] - ETA: 10s  5/157 [..............................] - ETA: 2s   9/157 [>.............................] - ETA: 2s 13/157 [=>............................] - ETA: 2s 17/157 [==>...........................] - ETA: 1s 21/157 [===>..........................] - ETA: 1s 25/157 [===>..........................] - ETA: 1s 29/157 [====>.........................] - ETA: 1s 33/157 [=====>........................] - ETA: 1s 37/157 [======>.......................] - ETA: 1s 41/157 [======>.......................] - ETA: 1s 45/157 [=======>......................] - ETA: 1s 50/157 [========>.....................] - ETA: 1s 54/157 [=========>....................] - ETA: 1s 59/157 [==========>...................] - ETA: 1s 67/157 [===========>..................] - ETA: 1s 75/157 [=============>................] - ETA: 0s 83/157 [==============>...............] - ETA: 0s 91/157 [================>.............] - ETA: 0s 99/157 [=================>............] - ETA: 0s107/157 [===================>..........] - ETA: 0s115/157 [====================>.........] - ETA: 0s123/157 [======================>.......] - ETA: 0s130/157 [=======================>......] - ETA: 0s138/157 [=========================>....] - ETA: 0s145/157 [==========================>...] - ETA: 0s153/157 [============================>.] - ETA: 0s157/157 [==============================] - 2s 9ms/step
+GE = 112.34
+SR = 0.0
+[32mComputing Guessing Entropy and Success Rate for Validation Set[0m
+  1/157 [..............................] - ETA: 9s  4/157 [..............................] - ETA: 2s  7/157 [>.............................] - ETA: 2s 10/157 [>.............................] - ETA: 2s 17/157 [==>...........................] - ETA: 1s 25/157 [===>..........................] - ETA: 1s 33/157 [=====>........................] - ETA: 1s 41/157 [======>.......................] - ETA: 1s 49/157 [========>.....................] - ETA: 1s 57/157 [=========>....................] - ETA: 0s 65/157 [===========>..................] - ETA: 0s 71/157 [============>.................] - ETA: 0s 78/157 [=============>................] - ETA: 0s 86/157 [===============>..............] - ETA: 0s 94/157 [================>.............] - ETA: 0s102/157 [==================>...........] - ETA: 0s110/157 [====================>.........] - ETA: 0s118/157 [=====================>........] - ETA: 0s126/157 [=======================>......] - ETA: 0s134/157 [========================>.....] - ETA: 0s142/157 [==========================>...] - ETA: 0s149/157 [===========================>..] - ETA: 0s157/157 [==============================] - ETA: 0s157/157 [==============================] - 1s 8ms/step
+GE = 76.94
+SR = 0.0
+d0_cnn_aug_s2: ok, validation GE area 94.61; desync 0: GE 119.74, traces to GE < 2 not reached; desync 50: GE 118.2, traces to GE < 2 not reached; desync 100: GE 150.31, traces to GE < 2 not reached; 587.2 s
+
+===== d0_cnn_wide_s2 (cnn_wide, trained on desync 0) =====
+SEED = 2
+Model: "d0_cnn_wide_s2"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv1d (Conv1D)             (None, 1400, 16)          816       
+                                                                 
+ batch_normalization (BatchN  (None, 1400, 16)         64        
+ ormalization)                                                   
+                                                                 
+ average_pooling1d (AverageP  (None, 350, 16)          0         
+ ooling1D)                                                       
+                                                                 
+ conv1d_1 (Conv1D)           (None, 350, 32)           25632     
+                                                                 
+ batch_normalization_1 (Batc  (None, 350, 32)          128       
+ hNormalization)                                                 
+                                                                 
+ average_pooling1d_1 (Averag  (None, 87, 32)           0         
+ ePooling1D)                                                     
+                                                                 
+ flatten (Flatten)           (None, 2784)              0         
+                                                                 
+ dense (Dense)               (None, 128)               356480    
+                                                                 
+ dense_1 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_2 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_3 (Dense)             (None, 9)                 1161      
+                                                                 
+=================================================================
+Total params: 417,305
+Trainable params: 417,209
+Non-trainable params: 96
+_________________________________________________________________
+Model: "d0_cnn_wide_s2"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv1d (Conv1D)             (None, 1400, 16)          816       
+                                                                 
+ batch_normalization (BatchN  (None, 1400, 16)         64        
+ ormalization)                                                   
+                                                                 
+ average_pooling1d (AverageP  (None, 350, 16)          0         
+ ooling1D)                                                       
+                                                                 
+ conv1d_1 (Conv1D)           (None, 350, 32)           25632     
+                                                                 
+ batch_normalization_1 (Batc  (None, 350, 32)          128       
+ hNormalization)                                                 
+                                                                 
+ average_pooling1d_1 (Averag  (None, 87, 32)           0         
+ ePooling1D)                                                     
+                                                                 
+ flatten (Flatten)           (None, 2784)              0         
+                                                                 
+ dense (Dense)               (None, 128)               356480    
+                                                                 
+ dense_1 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_2 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_3 (Dense)             (None, 9)                 1161      
+                                                                 
+=================================================================
+Total params: 417,305
+Trainable params: 417,209
+Non-trainable params: 96
+_________________________________________________________________
+Epoch 1/50
+WARNING:tensorflow:AutoGraph could not transform <function Model.make_train_function.<locals>.train_function at 0x00000220479088B8> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: 'arguments' object has no attribute 'posonlyargs'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+WARNING:tensorflow:AutoGraph could not transform <function cer_loss.<locals>.cer at 0x00000220440D84C8> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: module 'gast' has no attribute 'Constant'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+WARNING:tensorflow:AutoGraph could not transform <function Model.make_test_function.<locals>.test_function at 0x00000220453FD0D8> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: 'arguments' object has no attribute 'posonlyargs'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+WARNING:tensorflow:AutoGraph could not transform <function Model.make_predict_function.<locals>.predict_function at 0x000002202FAF1708> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: 'arguments' object has no attribute 'posonlyargs'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+Validation GE area = 128.90 (final GE 125.98)
+[34m
+Model saved ge_area = 128.8958 at epoch 1
+[0m
+196/196 - 62s - loss: 1.0123 - accuracy: 0.0772 - val_loss: 1.0051 - val_accuracy: 0.0722 - 62s/epoch - 315ms/step
+Epoch 2/50
+Validation GE area = 111.51 (final GE 103.43)
+[34m
+Model saved ge_area = 111.509 at epoch 2
+[0m
+196/196 - 61s - loss: 1.0068 - accuracy: 0.0798 - val_loss: 1.0002 - val_accuracy: 0.0878 - 61s/epoch - 312ms/step
+Epoch 3/50
+Validation GE area = 87.49 (final GE 65.09)
+[34m
+Model saved ge_area = 87.49035000000002 at epoch 3
+[0m
+196/196 - 79s - loss: 0.9981 - accuracy: 0.0875 - val_loss: 0.9949 - val_accuracy: 0.0854 - 79s/epoch - 402ms/step
+Epoch 4/50
+Validation GE area = 44.50 (final GE 17.19)
+[34m
+Model saved ge_area = 44.49615 at epoch 4
+[0m
+196/196 - 50s - loss: 0.9853 - accuracy: 0.0963 - val_loss: 0.9909 - val_accuracy: 0.1674 - 50s/epoch - 255ms/step
+Epoch 5/50
+Validation GE area = 19.94 (final GE 1.85)
+[34m
+Model saved ge_area = 19.9439 at epoch 5
+[0m
+196/196 - 55s - loss: 0.9707 - accuracy: 0.1077 - val_loss: 0.9606 - val_accuracy: 0.1130 - 55s/epoch - 280ms/step
+Epoch 6/50
+Validation GE area = 22.61 (final GE 2.78)
+196/196 - 54s - loss: 0.9601 - accuracy: 0.1089 - val_loss: 0.9701 - val_accuracy: 0.0816 - 54s/epoch - 274ms/step
+Epoch 7/50
+Validation GE area = 15.63 (final GE 1.35)
+[34m
+Model saved ge_area = 15.632599999999998 at epoch 7
+[0m
+196/196 - 53s - loss: 0.9447 - accuracy: 0.1186 - val_loss: 0.9687 - val_accuracy: 0.0914 - 53s/epoch - 269ms/step
+Epoch 8/50
+Validation GE area = 11.08 (final GE 1.05)
+[34m
+Model saved ge_area = 11.080499999999997 at epoch 8
+[0m
+196/196 - 56s - loss: 0.9342 - accuracy: 0.0961 - val_loss: 0.9567 - val_accuracy: 0.0754 - 56s/epoch - 283ms/step
+Epoch 9/50
+Validation GE area = 8.21 (final GE 1.00)
+[34m
+Model saved ge_area = 8.2059 at epoch 9
+[0m
+196/196 - 52s - loss: 0.9157 - accuracy: 0.1066 - val_loss: 0.9395 - val_accuracy: 0.0898 - 52s/epoch - 267ms/step
+Epoch 10/50
+Validation GE area = 14.87 (final GE 1.53)
+196/196 - 63s - loss: 0.9021 - accuracy: 0.1058 - val_loss: 0.9637 - val_accuracy: 0.0422 - 63s/epoch - 322ms/step
+Epoch 11/50
+Validation GE area = 10.90 (final GE 1.11)
+196/196 - 74s - loss: 0.9002 - accuracy: 0.1091 - val_loss: 0.9786 - val_accuracy: 0.1116 - 74s/epoch - 375ms/step
+Epoch 12/50
+Validation GE area = 6.83 (final GE 1.00)
+[34m
+Model saved ge_area = 6.8283000000000005 at epoch 12
+[0m
+196/196 - 74s - loss: 0.8851 - accuracy: 0.1281 - val_loss: 0.9441 - val_accuracy: 0.1232 - 74s/epoch - 378ms/step
+Epoch 13/50
+Validation GE area = 12.64 (final GE 1.22)
+196/196 - 72s - loss: 0.8730 - accuracy: 0.1370 - val_loss: 0.9642 - val_accuracy: 0.1184 - 72s/epoch - 366ms/step
+Epoch 14/50
+Validation GE area = 5.85 (final GE 1.00)
+[34m
+Model saved ge_area = 5.8538 at epoch 14
+[0m
+196/196 - 73s - loss: 0.8626 - accuracy: 0.1430 - val_loss: 0.9199 - val_accuracy: 0.1080 - 73s/epoch - 370ms/step
+Epoch 15/50
+Validation GE area = 6.05 (final GE 1.00)
+196/196 - 73s - loss: 0.8468 - accuracy: 0.1593 - val_loss: 0.9218 - val_accuracy: 0.1234 - 73s/epoch - 373ms/step
+Epoch 16/50
+Validation GE area = 6.48 (final GE 1.00)
+196/196 - 54s - loss: 0.8347 - accuracy: 0.1644 - val_loss: 0.9299 - val_accuracy: 0.1346 - 54s/epoch - 278ms/step
+Epoch 17/50
+Validation GE area = 6.96 (final GE 1.00)
+196/196 - 53s - loss: 0.8214 - accuracy: 0.1737 - val_loss: 0.9302 - val_accuracy: 0.1294 - 53s/epoch - 268ms/step
+Epoch 18/50
+Validation GE area = 6.85 (final GE 1.01)
+196/196 - 51s - loss: 0.8097 - accuracy: 0.1866 - val_loss: 0.9206 - val_accuracy: 0.1406 - 51s/epoch - 258ms/step
+Epoch 19/50
+Validation GE area = 6.94 (final GE 1.01)
+196/196 - 48s - loss: 0.7934 - accuracy: 0.2004 - val_loss: 0.9159 - val_accuracy: 0.1554 - 48s/epoch - 243ms/step
+Epoch 20/50
+Validation GE area = 6.53 (final GE 1.00)
+196/196 - 75s - loss: 0.7815 - accuracy: 0.2059 - val_loss: 0.9369 - val_accuracy: 0.1546 - 75s/epoch - 382ms/step
+Epoch 21/50
+Validation GE area = 7.40 (final GE 1.01)
+196/196 - 77s - loss: 0.7631 - accuracy: 0.2144 - val_loss: 0.9583 - val_accuracy: 0.1650 - 77s/epoch - 394ms/step
+Epoch 22/50
+Validation GE area = 7.95 (final GE 1.01)
+196/196 - 77s - loss: 0.7523 - accuracy: 0.2271 - val_loss: 0.9647 - val_accuracy: 0.1644 - 77s/epoch - 395ms/step
+Epoch 23/50
+Validation GE area = 6.43 (final GE 1.00)
+196/196 - 76s - loss: 0.7409 - accuracy: 0.2311 - val_loss: 0.9186 - val_accuracy: 0.1490 - 76s/epoch - 388ms/step
+Epoch 24/50
+Validation GE area = 6.45 (final GE 1.00)
+PlateauStop: no improvement for 10 epochs, stopped after epoch 24
+196/196 - 74s - loss: 0.7198 - accuracy: 0.2375 - val_loss: 0.9587 - val_accuracy: 0.1664 - 74s/epoch - 380ms/step
+  1/157 [..............................] - ETA: 51s  4/157 [..............................] - ETA: 3s   7/157 [>.............................] - ETA: 3s 10/157 [>.............................] - ETA: 2s 13/157 [=>............................] - ETA: 2s 16/157 [==>...........................] - ETA: 2s 19/157 [==>...........................] - ETA: 2s 22/157 [===>..........................] - ETA: 2s 25/157 [===>..........................] - ETA: 2s 28/157 [====>.........................] - ETA: 2s 31/157 [====>.........................] - ETA: 2s 34/157 [=====>........................] - ETA: 2s 37/157 [======>.......................] - ETA: 2s 40/157 [======>.......................] - ETA: 2s 43/157 [=======>......................] - ETA: 2s 46/157 [=======>......................] - ETA: 2s 49/157 [========>.....................] - ETA: 2s 51/157 [========>.....................] - ETA: 2s 53/157 [=========>....................] - ETA: 2s 56/157 [=========>....................] - ETA: 1s 59/157 [==========>...................] - ETA: 1s 62/157 [==========>...................] - ETA: 1s 65/157 [===========>..................] - ETA: 1s 68/157 [===========>..................] - ETA: 1s 71/157 [============>.................] - ETA: 1s 74/157 [=============>................] - ETA: 1s 77/157 [=============>................] - ETA: 1s 80/157 [==============>...............] - ETA: 1s 83/157 [==============>...............] - ETA: 1s 86/157 [===============>..............] - ETA: 1s 89/157 [================>.............] - ETA: 1s 92/157 [================>.............] - ETA: 1s 95/157 [=================>............] - ETA: 1s 98/157 [=================>............] - ETA: 1s101/157 [==================>...........] - ETA: 1s104/157 [==================>...........] - ETA: 1s107/157 [===================>..........] - ETA: 0s110/157 [====================>.........] - ETA: 0s113/157 [====================>.........] - ETA: 0s116/157 [=====================>........] - ETA: 0s119/157 [=====================>........] - ETA: 0s122/157 [======================>.......] - ETA: 0s125/157 [======================>.......] - ETA: 0s128/157 [=======================>......] - ETA: 0s131/157 [========================>.....] - ETA: 0s134/157 [========================>.....] - ETA: 0s137/157 [=========================>....] - ETA: 0s140/157 [=========================>....] - ETA: 0s143/157 [==========================>...] - ETA: 0s146/157 [==========================>...] - ETA: 0s149/157 [===========================>..] - ETA: 0s152/157 [============================>.] - ETA: 0s155/157 [============================>.] - ETA: 0s157/157 [==============================] - 3s 19ms/step
+GE = 1.0
+SR = 1.0
+Number of traces to reach GE = 1: 320
+  1/157 [..............................] - ETA: 18s  3/157 [..............................] - ETA: 3s   6/157 [>.............................] - ETA: 3s  9/157 [>.............................] - ETA: 3s 12/157 [=>............................] - ETA: 3s 15/157 [=>............................] - ETA: 3s 18/157 [==>...........................] - ETA: 2s 21/157 [===>..........................] - ETA: 2s 24/157 [===>..........................] - ETA: 2s 27/157 [====>.........................] - ETA: 2s 30/157 [====>.........................] - ETA: 2s 33/157 [=====>........................] - ETA: 2s 36/157 [=====>........................] - ETA: 2s 39/157 [======>.......................] - ETA: 2s 42/157 [=======>......................] - ETA: 2s 45/157 [=======>......................] - ETA: 2s 48/157 [========>.....................] - ETA: 2s 51/157 [========>.....................] - ETA: 2s 54/157 [=========>....................] - ETA: 2s 57/157 [=========>....................] - ETA: 1s 60/157 [==========>...................] - ETA: 1s 63/157 [===========>..................] - ETA: 1s 66/157 [===========>..................] - ETA: 1s 69/157 [============>.................] - ETA: 1s 72/157 [============>.................] - ETA: 1s 74/157 [=============>................] - ETA: 1s 76/157 [=============>................] - ETA: 1s 78/157 [=============>................] - ETA: 1s 81/157 [==============>...............] - ETA: 1s 84/157 [===============>..............] - ETA: 1s 87/157 [===============>..............] - ETA: 1s 90/157 [================>.............] - ETA: 1s 93/157 [================>.............] - ETA: 1s 96/157 [=================>............] - ETA: 1s 99/157 [=================>............] - ETA: 1s102/157 [==================>...........] - ETA: 1s105/157 [===================>..........] - ETA: 1s107/157 [===================>..........] - ETA: 1s109/157 [===================>..........] - ETA: 1s112/157 [====================>.........] - ETA: 0s115/157 [====================>.........] - ETA: 0s118/157 [=====================>........] - ETA: 0s121/157 [======================>.......] - ETA: 0s124/157 [======================>.......] - ETA: 0s127/157 [=======================>......] - ETA: 0s130/157 [=======================>......] - ETA: 0s133/157 [========================>.....] - ETA: 0s136/157 [========================>.....] - ETA: 0s139/157 [=========================>....] - ETA: 0s142/157 [==========================>...] - ETA: 0s145/157 [==========================>...] - ETA: 0s148/157 [===========================>..] - ETA: 0s151/157 [===========================>..] - ETA: 0s154/157 [============================>.] - ETA: 0s157/157 [==============================] - 3s 21ms/step
+GE = 1.0
+SR = 1.0
+Number of traces to reach GE = 1: 260
+resources/experiments/phase4_20261028_233344/models/best_model_ge_area_17932505518778944.h5
+[32mComputing Guessing Entropy and Success Rate for Attack Set[0m
+  1/157 [..............................] - ETA: 15s  4/157 [..............................] - ETA: 3s   7/157 [>.............................] - ETA: 2s 10/157 [>.............................] - ETA: 2s 13/157 [=>............................] - ETA: 2s 16/157 [==>...........................] - ETA: 2s 19/157 [==>...........................] - ETA: 2s 22/157 [===>..........................] - ETA: 2s 25/157 [===>..........................] - ETA: 2s 28/157 [====>.........................] - ETA: 2s 31/157 [====>.........................] - ETA: 2s 34/157 [=====>........................] - ETA: 2s 37/157 [======>.......................] - ETA: 2s 40/157 [======>.......................] - ETA: 2s 43/157 [=======>......................] - ETA: 2s 46/157 [=======>......................] - ETA: 2s 49/157 [========>.....................] - ETA: 2s 52/157 [========>.....................] - ETA: 2s 55/157 [=========>....................] - ETA: 2s 58/157 [==========>...................] - ETA: 1s 61/157 [==========>...................] - ETA: 1s 64/157 [===========>..................] - ETA: 1s 67/157 [===========>..................] - ETA: 1s 70/157 [============>.................] - ETA: 1s 73/157 [============>.................] - ETA: 1s 75/157 [=============>................] - ETA: 1s 77/157 [=============>................] - ETA: 1s 80/157 [==============>...............] - ETA: 1s 83/157 [==============>...............] - ETA: 1s 86/157 [===============>..............] - ETA: 1s 89/157 [================>.............] - ETA: 1s 92/157 [================>.............] - ETA: 1s 95/157 [=================>............] - ETA: 1s 98/157 [=================>............] - ETA: 1s101/157 [==================>...........] - ETA: 1s104/157 [==================>...........] - ETA: 1s107/157 [===================>..........] - ETA: 0s109/157 [===================>..........] - ETA: 0s111/157 [====================>.........] - ETA: 0s114/157 [====================>.........] - ETA: 0s117/157 [=====================>........] - ETA: 0s120/157 [=====================>........] - ETA: 0s123/157 [======================>.......] - ETA: 0s126/157 [=======================>......] - ETA: 0s129/157 [=======================>......] - ETA: 0s132/157 [========================>.....] - ETA: 0s135/157 [========================>.....] - ETA: 0s138/157 [=========================>....] - ETA: 0s141/157 [=========================>....] - ETA: 0s144/157 [==========================>...] - ETA: 0s147/157 [===========================>..] - ETA: 0s150/157 [===========================>..] - ETA: 0s153/157 [============================>.] - ETA: 0s156/157 [============================>.] - ETA: 0s157/157 [==============================] - 3s 20ms/step
+GE = 1.0
+SR = 1.0
+Number of traces to reach GE = 1: 370
+[32mComputing Guessing Entropy and Success Rate for Validation Set[0m
+  1/157 [..............................] - ETA: 9s  6/157 [>.............................] - ETA: 1s 10/157 [>.............................] - ETA: 1s 14/157 [=>............................] - ETA: 1s 19/157 [==>...........................] - ETA: 1s 24/157 [===>..........................] - ETA: 1s 29/157 [====>.........................] - ETA: 1s 34/157 [=====>........................] - ETA: 1s 39/157 [======>.......................] - ETA: 1s 44/157 [=======>......................] - ETA: 1s 49/157 [========>.....................] - ETA: 1s 54/157 [=========>....................] - ETA: 1s 60/157 [==========>...................] - ETA: 1s 65/157 [===========>..................] - ETA: 1s 71/157 [============>.................] - ETA: 0s 76/157 [=============>................] - ETA: 0s 81/157 [==============>...............] - ETA: 0s 86/157 [===============>..............] - ETA: 0s 91/157 [================>.............] - ETA: 0s 96/157 [=================>............] - ETA: 0s101/157 [==================>...........] - ETA: 0s106/157 [===================>..........] - ETA: 0s111/157 [====================>.........] - ETA: 0s116/157 [=====================>........] - ETA: 0s121/157 [======================>.......] - ETA: 0s126/157 [=======================>......] - ETA: 0s131/157 [========================>.....] - ETA: 0s136/157 [========================>.....] - ETA: 0s141/157 [=========================>....] - ETA: 0s146/157 [==========================>...] - ETA: 0s151/157 [===========================>..] - ETA: 0s156/157 [============================>.] - ETA: 0s157/157 [==============================] - 2s 11ms/step
+GE = 1.0
+SR = 1.0
+Number of traces to reach GE = 1: 300
+d0_cnn_wide_s2: ok, validation GE area 5.85; desync 0: GE 1.0, traces to GE < 2 360; desync 50: GE 119.85, traces to GE < 2 not reached; desync 100: GE 86.99, traces to GE < 2 not reached; 1583.5 s
+
+===== d0_cnn_gap_s2 (cnn_gap, trained on desync 0) =====
+SEED = 2
+WARNING:tensorflow:AutoGraph could not transform <bound method SampleMean.call of <custom.custom_models.neural_networks.SampleMean object at 0x0000022043FEA8C8>> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: 'arguments' object has no attribute 'posonlyargs'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+Model: "d0_cnn_gap_s2"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv1d (Conv1D)             (None, 1400, 16)          416       
+                                                                 
+ batch_normalization (BatchN  (None, 1400, 16)         64        
+ ormalization)                                                   
+                                                                 
+ average_pooling1d (AverageP  (None, 350, 16)          0         
+ ooling1D)                                                       
+                                                                 
+ conv1d_1 (Conv1D)           (None, 350, 32)           12832     
+                                                                 
+ batch_normalization_1 (Batc  (None, 350, 32)          128       
+ hNormalization)                                                 
+                                                                 
+ average_pooling1d_1 (Averag  (None, 87, 32)           0         
+ ePooling1D)                                                     
+                                                                 
+ sample_mean (SampleMean)    (None, 32)                0         
+                                                                 
+ dense (Dense)               (None, 128)               4224      
+                                                                 
+ dense_1 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_2 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_3 (Dense)             (None, 9)                 1161      
+                                                                 
+=================================================================
+Total params: 51,849
+Trainable params: 51,753
+Non-trainable params: 96
+_________________________________________________________________
+Model: "d0_cnn_gap_s2"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv1d (Conv1D)             (None, 1400, 16)          416       
+                                                                 
+ batch_normalization (BatchN  (None, 1400, 16)         64        
+ ormalization)                                                   
+                                                                 
+ average_pooling1d (AverageP  (None, 350, 16)          0         
+ ooling1D)                                                       
+                                                                 
+ conv1d_1 (Conv1D)           (None, 350, 32)           12832     
+                                                                 
+ batch_normalization_1 (Batc  (None, 350, 32)          128       
+ hNormalization)                                                 
+                                                                 
+ average_pooling1d_1 (Averag  (None, 87, 32)           0         
+ ePooling1D)                                                     
+                                                                 
+ sample_mean (SampleMean)    (None, 32)                0         
+                                                                 
+ dense (Dense)               (None, 128)               4224      
+                                                                 
+ dense_1 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_2 (Dense)             (None, 128)               16512     
+                                                                 
+ dense_3 (Dense)             (None, 9)                 1161      
+                                                                 
+=================================================================
+Total params: 51,849
+Trainable params: 51,753
+Non-trainable params: 96
+_________________________________________________________________
+Epoch 1/50
+WARNING:tensorflow:AutoGraph could not transform <function Model.make_train_function.<locals>.train_function at 0x000002204844CE58> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: 'arguments' object has no attribute 'posonlyargs'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+WARNING:tensorflow:AutoGraph could not transform <function cer_loss.<locals>.cer at 0x0000022047902A68> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: module 'gast' has no attribute 'Constant'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+WARNING:tensorflow:AutoGraph could not transform <function Model.make_test_function.<locals>.test_function at 0x0000022043EBFE58> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: 'arguments' object has no attribute 'posonlyargs'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+WARNING:tensorflow:AutoGraph could not transform <function Model.make_predict_function.<locals>.predict_function at 0x00000220445DDB88> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: 'arguments' object has no attribute 'posonlyargs'
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+Validation GE area = 127.32 (final GE 125.18)
+[34m
+Model saved ge_area = 127.31789999999997 at epoch 1
+[0m
+196/196 - 52s - loss: 1.0057 - accuracy: 0.0304 - val_loss: 1.0038 - val_accuracy: 0.0192 - 52s/epoch - 264ms/step
+Epoch 2/50
+Validation GE area = 132.26 (final GE 133.71)
+196/196 - 55s - loss: 1.0018 - accuracy: 0.0175 - val_loss: 1.0025 - val_accuracy: 0.0174 - 55s/epoch - 280ms/step
+Epoch 3/50
+Validation GE area = 111.28 (final GE 105.16)
+[34m
+Model saved ge_area = 111.28125 at epoch 3
+[0m
+196/196 - 42s - loss: 1.0013 - accuracy: 0.0173 - val_loss: 1.0018 - val_accuracy: 0.0172 - 42s/epoch - 216ms/step
+Epoch 4/50
+Validation GE area = 129.66 (final GE 128.49)
+196/196 - 33s - loss: 1.0011 - accuracy: 0.0175 - val_loss: 1.0020 - val_accuracy: 0.0180 - 33s/epoch - 168ms/step
+Epoch 5/50
+Validation GE area = 125.75 (final GE 126.52)
+196/196 - 32s - loss: 1.0009 - accuracy: 0.0180 - val_loss: 1.0042 - val_accuracy: 0.0176 - 32s/epoch - 166ms/step
+Epoch 6/50
+Validation GE area = 128.21 (final GE 125.34)
+196/196 - 34s - loss: 1.0004 - accuracy: 0.0181 - val_loss: 1.0040 - val_accuracy: 0.0180 - 34s/epoch - 171ms/step
+Epoch 7/50
+Validation GE area = 126.83 (final GE 125.16)
+196/196 - 34s - loss: 1.0012 - accuracy: 0.0185 - val_loss: 1.0021 - val_accuracy: 0.0172 - 34s/epoch - 172ms/step
+Epoch 8/50
+Validation GE area = 115.22 (final GE 109.95)
+196/196 - 33s - loss: 1.0005 - accuracy: 0.0186 - val_loss: 1.0039 - val_accuracy: 0.0182 - 33s/epoch - 170ms/step
+Epoch 9/50
+Validation GE area = 132.17 (final GE 135.31)
+196/196 - 34s - loss: 1.0007 - accuracy: 0.0191 - val_loss: 1.0033 - val_accuracy: 0.0178 - 34s/epoch - 172ms/step
+Epoch 10/50
+Validation GE area = 121.20 (final GE 116.64)
+196/196 - 34s - loss: 0.9996 - accuracy: 0.0183 - val_loss: 1.0010 - val_accuracy: 0.0176 - 34s/epoch - 176ms/step
+Epoch 11/50
+Validation GE area = 118.76 (final GE 111.57)
+196/196 - 35s - loss: 1.0007 - accuracy: 0.0185 - val_loss: 1.0032 - val_accuracy: 0.0180 - 35s/epoch - 178ms/step
+Epoch 12/50
+Validation GE area = 131.59 (final GE 126.94)
+196/196 - 34s - loss: 0.9997 - accuracy: 0.0187 - val_loss: 1.0032 - val_accuracy: 0.0202 - 34s/epoch - 173ms/step
+Epoch 13/50
+Validation GE area = 122.75 (final GE 119.66)
+PlateauStop: no improvement for 10 epochs, stopped after epoch 13
+196/196 - 36s - loss: 0.9997 - accuracy: 0.0212 - val_loss: 1.0035 - val_accuracy: 0.0174 - 36s/epoch - 185ms/step
+  1/157 [..............................] - ETA: 29s  8/157 [>.............................] - ETA: 1s  16/157 [==>...........................] - ETA: 1s 24/157 [===>..........................] - ETA: 0s 31/157 [====>.........................] - ETA: 0s 39/157 [======>.......................] - ETA: 0s 47/157 [=======>......................] - ETA: 0s 54/157 [=========>....................] - ETA: 0s 61/157 [==========>...................] - ETA: 0s 69/157 [============>.................] - ETA: 0s 77/157 [=============>................] - ETA: 0s 85/157 [===============>..............] - ETA: 0s 92/157 [================>.............] - ETA: 0s100/157 [==================>...........] - ETA: 0s107/157 [===================>..........] - ETA: 0s114/157 [====================>.........] - ETA: 0s121/157 [======================>.......] - ETA: 0s127/157 [=======================>......] - ETA: 0s131/157 [========================>.....] - ETA: 0s135/157 [========================>.....] - ETA: 0s139/157 [=========================>....] - ETA: 0s143/157 [==========================>...] - ETA: 0s147/157 [===========================>..] - ETA: 0s153/157 [============================>.] - ETA: 0s157/157 [==============================] - 1s 8ms/step
+GE = 121.12
+SR = 0.02
+  1/157 [..............................] - ETA: 12s  4/157 [..............................] - ETA: 2s   8/157 [>.............................] - ETA: 2s 11/157 [=>............................] - ETA: 2s 14/157 [=>............................] - ETA: 2s 18/157 [==>...........................] - ETA: 2s 25/157 [===>..........................] - ETA: 1s 32/157 [=====>........................] - ETA: 1s 39/157 [======>.......................] - ETA: 1s 46/157 [=======>......................] - ETA: 1s 53/157 [=========>....................] - ETA: 1s 60/157 [==========>...................] - ETA: 0s 67/157 [===========>..................] - ETA: 0s 74/157 [=============>................] - ETA: 0s 81/157 [==============>...............] - ETA: 0s 88/157 [===============>..............] - ETA: 0s 96/157 [=================>............] - ETA: 0s104/157 [==================>...........] - ETA: 0s111/157 [====================>.........] - ETA: 0s119/157 [=====================>........] - ETA: 0s126/157 [=======================>......] - ETA: 0s134/157 [========================>.....] - ETA: 0s142/157 [==========================>...] - ETA: 0s150/157 [===========================>..] - ETA: 0s157/157 [==============================] - 1s 8ms/step
+GE = 125.27
+SR = 0.0
+resources/experiments/phase4_20261028_233344/models/best_model_ge_area_1793252135279982.h5
+[32mComputing Guessing Entropy and Success Rate for Attack Set[0m
+  1/157 [..............................] - ETA: 8s  6/157 [>.............................] - ETA: 1s 10/157 [>.............................] - ETA: 1s 15/157 [=>............................] - ETA: 1s 22/157 [===>..........................] - ETA: 1s 30/157 [====>.........................] - ETA: 1s 37/157 [======>.......................] - ETA: 1s 45/157 [=======>......................] - ETA: 0s 52/157 [========>.....................] - ETA: 0s 59/157 [==========>...................] - ETA: 0s 66/157 [===========>..................] - ETA: 0s 72/157 [============>.................] - ETA: 0s 79/157 [==============>...............] - ETA: 0s 86/157 [===============>..............] - ETA: 0s 94/157 [================>.............] - ETA: 0s102/157 [==================>...........] - ETA: 0s110/157 [====================>.........] - ETA: 0s118/157 [=====================>........] - ETA: 0s126/157 [=======================>......] - ETA: 0s133/157 [========================>.....] - ETA: 0s141/157 [=========================>....] - ETA: 0s149/157 [===========================>..] - ETA: 0s157/157 [==============================] - ETA: 0s157/157 [==============================] - 1s 8ms/step
+GE = 150.02
+SR = 0.0
+[32mComputing Guessing Entropy and Success Rate for Validation Set[0m
+  1/157 [..............................] - ETA: 8s  4/157 [..............................] - ETA: 2s  8/157 [>.............................] - ETA: 2s 13/157 [=>............................] - ETA: 2s 17/157 [==>...........................] - ETA: 2s 21/157 [===>..........................] - ETA: 1s 24/157 [===>..........................] - ETA: 1s 28/157 [====>.........................] - ETA: 1s 32/157 [=====>........................] - ETA: 1s 36/157 [=====>........................] - ETA: 1s 40/157 [======>.......................] - ETA: 1s 44/157 [=======>......................] - ETA: 1s 47/157 [=======>......................] - ETA: 1s 50/157 [========>.....................] - ETA: 1s 54/157 [=========>....................] - ETA: 1s 58/157 [==========>...................] - ETA: 1s 65/157 [===========>..................] - ETA: 1s 73/157 [============>.................] - ETA: 1s 81/157 [==============>...............] - ETA: 0s 88/157 [===============>..............] - ETA: 0s 96/157 [=================>............] - ETA: 0s103/157 [==================>...........] - ETA: 0s111/157 [====================>.........] - ETA: 0s118/157 [=====================>........] - ETA: 0s125/157 [======================>.......] - ETA: 0s132/157 [========================>.....] - ETA: 0s139/157 [=========================>....] - ETA: 0s146/157 [==========================>...] - ETA: 0s154/157 [============================>.] - ETA: 0s157/157 [==============================] - 2s 10ms/step
+GE = 111.89
+SR = 0.0
+d0_cnn_gap_s2: ok, validation GE area 111.28; desync 0: GE 141.14, traces to GE < 2 not reached; desync 50: GE 102.07, traces to GE < 2 not reached; desync 100: GE 132.42, traces to GE < 2 not reached; 525.2 s
+
+Stage baseline: ok. Results: resources/experiments/phase4_20261028_233344
+ANALYSIS_ID = 96
+ANALYSIS_ID = 97
+ANALYSIS_ID = 98
+ANALYSIS_ID = 99
+ANALYSIS_ID = 100
+RUN_FOLDER = resources/experiments/phase4_20261028_233344

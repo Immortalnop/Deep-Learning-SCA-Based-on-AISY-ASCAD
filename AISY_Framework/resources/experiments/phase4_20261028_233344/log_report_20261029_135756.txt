@@ -1,0 +1,55 @@
+Phase 4, stage report: {'stage': 'all', 'study': 'resources/experiments/phase4_20261028_233344', 'phase3': None, 'variants': ['mlp', 'cnn', 'cnn_aug', 'cnn_wide', 'cnn_gap'], 'seeds': [2], 'levels': [50, 100], 'epochs': 50, 'patience': 10, 'aug_shift': 100, 'aug_noise': 0.1, 'subset_seed': 0}
+Protocol: {'dataset': 'ASCAD.h5', 'leakage_model': 'HW', 'byte': 2, 'profiling_traces': 50000, 'attack_traces': 10000, 'key_rank_executions': 100, 'key_rank_attack_traces': 1000, 'key_rank_report_interval': 10}
+
+# Phase 4: robustness to desynchronisation (2026-10-29 13:58)
+
+Data: ASCAD v1 variable key, byte 2, 50000 profiling traces, attack traces 5000-9999, validation traces 0-4999; desync 0 / 50 / 100 files ASCAD.h5, ascad-variable-desync50.h5, ascad-variable-desync100.h5.
+Training: up to 50 epochs, early stopping on the validation GE area of the training desync level, stop after 10 epochs without improvement; best epoch kept. Seeds 1, 2.
+Attack metrics: the same key rank and 100 attack subsets (seed 0) as Phases 2 and 3. The spread over seeds (independent trainings) is the one to trust.
+
+## Experiment A: trained on desync 0, attacked at each desync level
+
+| variant | train_desync | attack_desync | seeds | reached_ge_lt_2 | traces_ge_lt_2 | att_ge_final | att_ge_area | parameters |
+|---|---|---|---|---|---|---|---|---|
+| mlp | 0 | 0 | 2 | 0/2 | n/a | 19.8 ± 1.2 | 48.8 ± 4.4 | 402609 |
+| cnn | 0 | 0 | 2 | 2/2 | 390.0 ± 56.6 | 1.0 ± 0.0 | 8.6 ± 0.8 | 404105 |
+| cnn_aug | 0 | 0 | 2 | 0/2 | n/a | 62.1 ± 81.5 | 75.3 ± 67.6 | 404105 |
+| cnn_wide | 0 | 0 | 2 | 2/2 | 330.0 ± 42.4 | 1.0 ± 0.0 | 5.8 ± 1.4 | 417305 |
+| cnn_gap | 0 | 0 | 2 | 0/2 | n/a | 160.0 ± 26.7 | 151.1 ± 19.1 | 51849 |
+| mlp | 0 | 50 | 2 | 0/2 | n/a | 127.8 ± 15.6 | 126.9 ± 11.7 | 402609 |
+| cnn | 0 | 50 | 2 | 0/2 | n/a | 120.3 ± 1.8 | 126.6 ± 3.1 | 404105 |
+| cnn_aug | 0 | 50 | 2 | 0/2 | n/a | 136.5 ± 25.9 | 137.1 ± 22.1 | 404105 |
+| cnn_wide | 0 | 50 | 2 | 0/2 | n/a | 106.8 ± 18.5 | 115.0 ± 12.4 | 417305 |
+| cnn_gap | 0 | 50 | 2 | 0/2 | n/a | 114.5 ± 17.6 | 117.8 ± 10.1 | 51849 |
+| mlp | 0 | 100 | 2 | 0/2 | n/a | 127.1 ± 6.6 | 130.5 ± 2.9 | 402609 |
+| cnn | 0 | 100 | 2 | 0/2 | n/a | 107.0 ± 30.6 | 115.3 ± 17.5 | 404105 |
+| cnn_aug | 0 | 100 | 2 | 0/2 | n/a | 139.5 ± 15.3 | 135.5 ± 16.2 | 404105 |
+| cnn_wide | 0 | 100 | 2 | 0/2 | n/a | 94.1 ± 10.1 | 109.9 ± 3.5 | 417305 |
+| cnn_gap | 0 | 100 | 2 | 0/2 | n/a | 130.1 ± 3.3 | 129.8 ± 1.9 | 51849 |
+
+## Experiment B: trained and attacked on the same desync level
+
+| variant | train_desync | attack_desync | seeds | reached_ge_lt_2 | traces_ge_lt_2 | att_ge_final | att_ge_area | parameters |
+|---|---|---|---|---|---|---|---|---|
+| mlp | 50 | 50 | 2 | 0/2 | n/a | 115.3 ± 2.5 | 122.6 ± 0.4 | 402609 |
+| cnn | 50 | 50 | 2 | 0/2 | n/a | 137.1 ± 26.7 | 132.7 ± 13.5 | 404105 |
+| cnn_aug | 50 | 50 | 2 | 0/2 | n/a | 141.0 ± 41.2 | 136.6 ± 26.5 | 404105 |
+| cnn_wide | 50 | 50 | 2 | 0/2 | n/a | 123.8 ± 61.2 | 122.9 ± 40.5 | 417305 |
+| cnn_gap | 50 | 50 | 2 | 0/2 | n/a | 114.1 ± 19.1 | 117.7 ± 13.6 | 51849 |
+| mlp | 100 | 100 | 2 | 0/2 | n/a | 133.9 ± 27.1 | 134.8 ± 15.8 | 402609 |
+| cnn | 100 | 100 | 2 | 0/2 | n/a | 79.6 ± 12.4 | 95.7 ± 4.1 | 404105 |
+| cnn_aug | 100 | 100 | 2 | 0/2 | n/a | 121.4 ± 39.4 | 124.3 ± 28.3 | 404105 |
+| cnn_wide | 100 | 100 | 2 | 0/2 | n/a | 101.3 ± 23.3 | 110.8 ± 17.1 | 417305 |
+| cnn_gap | 100 | 100 | 2 | 0/2 | n/a | 123.4 ± 13.3 | 130.0 ± 7.4 | 51849 |
+
+## Meaning
+
+- Attack on desync 0, trained on desync 0: best `cnn_wide` (GE < 2 in 2/2 seeds, traces 330.0 ± 42.4). Seeds reaching GE < 2: mlp 0/2, cnn 2/2, cnn_aug 0/2, cnn_wide 2/2, cnn_gap 0/2.
+- Attack on desync 50, trained on desync 0: best `cnn_wide` (GE < 2 in 0/2 seeds, traces n/a). Seeds reaching GE < 2: mlp 0/2, cnn 0/2, cnn_aug 0/2, cnn_wide 0/2, cnn_gap 0/2.
+- Attack on desync 50, trained on the same level: best `cnn_gap` (GE < 2 in 0/2 seeds, traces n/a). Seeds reaching GE < 2: mlp 0/2, cnn 0/2, cnn_aug 0/2, cnn_wide 0/2, cnn_gap 0/2.
+- Attack on desync 100, trained on desync 0: best `cnn_wide` (GE < 2 in 0/2 seeds, traces n/a). Seeds reaching GE < 2: mlp 0/2, cnn 0/2, cnn_aug 0/2, cnn_wide 0/2, cnn_gap 0/2.
+- Attack on desync 100, trained on the same level: best `cnn` (GE < 2 in 0/2 seeds, traces n/a). Seeds reaching GE < 2: mlp 0/2, cnn 0/2, cnn_aug 0/2, cnn_wide 0/2, cnn_gap 0/2.
+
+Files: `results.csv`, `eval.csv`, `ge_desync.png`, `runs.csv`, `predictions/`, `tensorboard/`.
+
+Stage report: ok. Results: resources/experiments/phase4_20261028_233344

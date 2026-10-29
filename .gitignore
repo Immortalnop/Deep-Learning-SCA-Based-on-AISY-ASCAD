@@ -4,7 +4,6 @@
 .idea
 __pycache__/
 venv
-resources
 *.sh
 
 # ---------------------------------------------------------------
@@ -92,3 +91,6 @@ mlruns/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Report PDF stays local
+*.pdf
