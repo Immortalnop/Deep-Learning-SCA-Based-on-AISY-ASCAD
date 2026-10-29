@@ -1,0 +1,61 @@
+Phase 2: {'methods': ['template_pca', 'template_poi', 'cpa', 'cpa_known_mask', 'cpa_2nd_order'], 'dataset': 'ASCAD.h5', 'byte': 2, 'leakage_models': ['ID', 'HW'], 'components': 20, 'poi_width': 5, 'seed': 0, 'aisy_ids': [], 'data_folder': 'data/'}
+Protocol: {'dataset': 'ASCAD.h5', 'leakage_model': 'HW', 'byte': 2, 'profiling_traces': 50000, 'attack_traces': 10000, 'key_rank_executions': 100, 'key_rank_attack_traces': 1000, 'key_rank_report_interval': 10}
+Profiling (50000, 1400), attack (5000, 1400) (attack traces 5000-9999, samples 0-1399), attack key byte 2 = 0x22
+Share leakage points (SNR peaks > 2 x noise floor 0.00685): sbox_xor_r 1071/1170, r 188/62, sbox_xor_rout 1000/1020, rout 188/125
+
+===== template_pca_ID =====
+template_pca_ID: final GE 1.54 ± 1.66 (median rank 1), SR 0.78, 5.4 s
+
+===== template_pca_HW =====
+template_pca_HW: final GE 1.00 ± 0.00 (median rank 1), SR 1.00, 4.1 s
+
+===== template_poi_ID =====
+template_poi: 77 samples around [62, 125, 188, 1000, 1020, 1071, 1170]
+template_poi_ID: final GE 3.41 ± 4.91 (median rank 1), SR 0.57, 1.9 s
+
+===== template_poi_HW =====
+template_poi: 77 samples around [62, 125, 188, 1000, 1020, 1071, 1170]
+template_poi_HW: final GE 1.00 ± 0.00 (median rank 1), SR 1.00, 1.7 s
+
+===== cpa_HW =====
+cpa_HW: final GE 116.57 ± 68.24 (median rank 109.5), SR 0.00, 116.0 s
+
+===== cpa_known_mask_HW =====
+cpa_known_mask_HW: final GE 1.00 ± 0.00 (median rank 1), SR 1.00, 96.7 s
+
+===== cpa_2nd_order_HW =====
+cpa_2nd_order: 11 x 11 products around r 188 and sbox_xor_r 1071
+cpa_2nd_order: 11 x 11 products around rout 188 and sbox_xor_rout 1000
+cpa_2nd_order_HW: final GE 3.15 ± 5.60 (median rank 1), SR 0.59, 15.3 s
+
+# Phase 2: classic baselines (2026-10-25 23:37)
+
+Data: ASCAD.h5, byte 2 (attack key 0x22), 50000 profiling traces, attack traces 5000-9999 (the AISY attack set when early stopping uses the first half for validation), AISY sample window.
+GE: mean key rank over 100 random subsets of 1000 attack traces (same subsets for every attack, seed 0), every 10 traces; tied key guesses count half. Same protocol as Phase 0.
+Templates: ID and HW classes, PCA 20 components, QDA (uniform priors, reg_param 0.01). Windows: +/- 5 samples around the share SNR peaks sbox_xor_r 1071/1170, r 188/62, sbox_xor_rout 1000/1020, rout 188/125 (templates: all peaks; 2nd-order CPA: top peak of each share). CPA: HW hypothesis.
+Phase 0 trains the networks on HW classes: compare them with the `_HW` template rows.
+
+| Attack | Final GE (± std over subsets) | Final median rank | Final SR | Traces to GE < 2 | Seconds |
+|---|---|---|---|---|---|
+| template_pca_ID | 1.54 ± 1.66 | 1 | 0.78 | 860 | 5.4 |
+| template_pca_HW | 1.0 ± 0.0 | 1 | 1.0 | 360 | 4.1 |
+| template_poi_ID | 3.41 ± 4.91 | 1 | 0.57 | not reached | 1.9 |
+| template_poi_HW | 1.0 ± 0.0 | 1 | 1.0 | 260 | 1.7 |
+| cpa_HW | 116.57 ± 68.24 | 109.5 | 0.0 | not reached | 116.0 |
+| cpa_known_mask_HW | 1.0 ± 0.0 | 1 | 1.0 | 30 | 96.7 |
+| cpa_2nd_order_HW | 3.15 ± 5.6 | 1 | 0.59 | not reached | 15.3 |
+
+## Meaning
+
+- `template_pca_ID`: Whole-trace PCA templates recover the key.
+- `template_pca_HW`: Whole-trace PCA templates recover the key.
+- `template_poi_ID`: Templates on the share points do not reach GE < 2 in this trace budget.
+- `template_poi_HW`: Templates on the share points recover the key: QDA models the share dependence.
+- `cpa_HW`: First-order CPA on the unmasked value fails, as expected: masking removes first-order leakage.
+- `cpa_known_mask_HW`: With the true mask, first-order CPA recovers the key: the masked share leaks on its own.
+- `cpa_2nd_order_HW`: Second-order CPA around the share points does not reach GE < 2 in this trace budget; compare the median rank: a few failed subsets can hold the mean up.
+- Best real classic attack: `template_poi_HW`, GE < 2 after 260 traces. A network in Phase 3 should beat this to be worth its cost.
+
+Files: `ge.png`, `share_correlation.png`, `results.csv`, `curves.npz` (keys `<attack>_ge`, `<attack>_sr`, `interval`).
+
+Results: resources/experiments/phase2_20261025_233322

@@ -1,0 +1,7 @@
+model,seed,status,analysis_id,best_ge,best_sr,best_traces_ge_lt_2,final_ge,final_sr,final_traces_ge_lt_2,error
+mlp,120936,ok,112,30.1,0.11,,33.26,0.04,,
+cnn,120936,ok,113,136.04,0.01,,150.72,0.0,,
+mlp,55963,ok,114,20.07,0.14,,13.45,0.18,,
+cnn,55963,ok,115,93.34,0.01,,91.93,0.02,,
+mlp,519146,ok,116,4.09,0.52,,4.7,0.46,,
+cnn,519146,ok,117,85.68,0.02,,88.39,0.01,,

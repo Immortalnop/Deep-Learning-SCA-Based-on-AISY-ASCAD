@@ -1,0 +1,4 @@
+run,variant,train_desync,attack_desync,seed,att_ge_area,att_ge_final,att_median_rank,att_sr_final,att_traces_ge_lt_2
+d0_cnn_s1,cnn,0,0,1,8.3,1.0,1.0,1.0,400
+d0_cnn_s2,cnn,0,0,2,7.06,1.0,1.0,1.0,340
+d0_cnn_s3,cnn,0,0,3,7.39,1.0,1.0,1.0,360

@@ -1,0 +1,4 @@
+run,stage,variant,model,hp,train_desync,loss,seed,batch_size,status,analysis_id,parameters,epochs_run,best_epoch,val_ge_area,val_ge_final,seconds,error
+d0_cnn_s1,train,cnn,cnn_search,"{""activation"": ""selu"", ""batch_size"": 256, ""conv_blocks"": 2, ""dense_layers"": 3, ""dense_width"": 128, ""filters"": 16, ""kernel"": 25, ""learning_rate"": 0.0005, ""pool"": 4}",0,cer,1,256,ok,111,404105,31,21,6.03,1.0,1336.8,
+d0_cnn_s2,train,cnn,cnn_search,"{""activation"": ""selu"", ""batch_size"": 256, ""conv_blocks"": 2, ""dense_layers"": 3, ""dense_width"": 128, ""filters"": 16, ""kernel"": 25, ""learning_rate"": 0.0005, ""pool"": 4}",0,cer,2,256,ok,133,404105,25,15,5.81,1.0,1681.6,
+d0_cnn_s3,train,cnn,cnn_search,"{""activation"": ""selu"", ""batch_size"": 256, ""conv_blocks"": 2, ""dense_layers"": 3, ""dense_width"": 128, ""filters"": 16, ""kernel"": 25, ""learning_rate"": 0.0005, ""pool"": 4}",0,cer,3,256,ok,134,404105,32,22,6.58,1.0,1469.0,

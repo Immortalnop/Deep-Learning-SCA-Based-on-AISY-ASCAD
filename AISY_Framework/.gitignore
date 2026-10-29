@@ -1,5 +1,13 @@
 .idea
 __pycache__/
 venv
-resources
+# Results (csv, md, png, logs) are tracked; large or binary parts and invalid studies are not
+resources/models/
+resources/experiments/_archive/
+resources/experiments/*/predictions/
+resources/experiments/*/tensorboard/
+resources/experiments/*/models/
+resources/experiments/*/databases/
+resources/experiments/*/figures/
+resources/experiments/*/npz/
 *.sh

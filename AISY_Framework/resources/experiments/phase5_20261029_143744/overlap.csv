@@ -1,0 +1,10 @@
+run,variant,attack_desync,traces,spearman_masked_value,spearman_mask,enrichment,samples_in_windows,percentile_at_masked_value_peak,percentile_at_mask_peak
+d0_cnn_s1,cnn,0,2000,0.235,0.143,2.91,22,100.0,99.9
+d0_cnn_s1,cnn,50,2000,0.198,0.13,2.26,22,99.6,100.0
+d0_cnn_s1,cnn,100,2000,0.179,0.156,2.19,22,97.9,100.0
+d0_cnn_s2,cnn,0,2000,0.242,0.147,3.63,22,99.8,100.0
+d0_cnn_s2,cnn,50,2000,0.197,0.171,2.81,22,99.8,99.6
+d0_cnn_s2,cnn,100,2000,0.2,0.15,2.68,22,99.8,99.4
+d0_cnn_s3,cnn,0,2000,0.216,0.133,2.61,22,99.3,100.0
+d0_cnn_s3,cnn,50,2000,0.177,0.158,2.09,22,99.4,100.0
+d0_cnn_s3,cnn,100,2000,0.205,0.131,1.81,22,99.4,100.0

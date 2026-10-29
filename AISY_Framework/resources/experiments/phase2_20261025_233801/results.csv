@@ -1,0 +1,8 @@
+attack,method,leakage_model,status,final_ge,final_ge_std,final_median_rank,final_sr,traces_ge_lt_2,seconds,error
+template_pca_ID,template_pca,ID,ok,1.36,0.89,1.0,0.79,790,5.8,
+template_pca_HW,template_pca,HW,ok,1.0,0.0,1.0,1.0,310,4.7,
+template_poi_ID,template_poi,ID,ok,3.8,6.84,1.0,0.54,,2.3,
+template_poi_HW,template_poi,HW,ok,1.0,0.0,1.0,1.0,250,1.7,
+cpa_HW,cpa,HW,ok,130.17,75.84,131.5,0.0,,100.3,
+cpa_known_mask_HW,cpa_known_mask,HW,ok,1.0,0.0,1.0,1.0,40,83.6,
+cpa_2nd_order_HW,cpa_2nd_order,HW,ok,2.5,4.0,1.0,0.67,,14.0,

@@ -1,0 +1,62 @@
+# Phase 3: systematic CNN study (2026-10-28 20:56)
+
+Data: ASCAD.h5, byte 2, attack traces 5000-9999, validation traces 0-4999.
+Training: up to 50 epochs, early stopping on the validation GE area (mean validation GE over 10-1,000 traces), stop after 10 epochs without improvement; the best epoch's weights are kept.
+Selection: validation GE area only. Attack metrics: same key rank and the same 100 attack subsets (seed 0) as Phase 2.
+Uncertainty: the 100 subsets all come from the same 5000 attack traces, so they overlap and the ± over subsets understates it. The spread over the ablation seeds (independent trainings) is the one to trust; a near-random model can land well above or below GE 128 by chance.
+
+## Ranked runs (by validation GE area)
+
+| run | loss | parameters | best_epoch | val_ge_area | att_ge_area | att_ge_final | att_sr_final | att_traces_ge_lt_2 |
+|---|---|---|---|---|---|---|---|---|
+| ablate_best_cnn_s2 | cer | 404105 | 18 | 5.99 | 8.04 | 1.0 | 1.0 | 350 |
+| ablate_best_cnn_s1 | cer | 404105 | 15 | 6.26 | 9.19 | 1.01 | 0.99 | 430 |
+| ablate_best_cnn_s3 | cer | 404105 | 14 | 7.32 | 8.5 | 1.01 | 0.99 | 400 |
+| cer_search_03 | cer | 404105 | 16 | 8.29 | 7.72 | 1.0 | 1.0 | 360 |
+| ablate_leakage_ID_s3 | cer | 435968 | 29 | 10.75 | 26.24 | 21.8 | 0.08 | not reached |
+| cer_search_04 | cer | 427209 | 23 | 11.23 | 14.04 | 1.22 | 0.92 | 650 |
+| ablate_profiling_25000_s2 | cer | 404105 | 16 | 12.45 | 17.61 | 1.52 | 0.83 | 890 |
+| ablate_leakage_ID_s1 | cer | 435968 | 18 | 14.3 | 30.5 | 27.77 | 0.01 | not reached |
+| search_08 | cce | 298857 | 18 | 17.11 | 20.91 | 1.91 | 0.77 | 1000 |
+| ablate_profiling_25000_s3 | cer | 404105 | 22 | 20.47 | 18.41 | 1.64 | 0.8 | 890 |
+| ablate_leakage_ID_s2 | cer | 435968 | 16 | 22.13 | 20.87 | 15.81 | 0.07 | not reached |
+| cer_search_08 | cer | 298857 | 25 | 31.61 | 41.73 | 17.35 | 0.17 | not reached |
+| search_04 | cce | 427209 | 16 | 34.39 | 40.6 | 12.5 | 0.19 | not reached |
+| ablate_mlp_s2 | cce | 402609 | 5 | 35.72 | 51.87 | 20.61 | 0.17 | not reached |
+| ablate_mlp_s3 | cce | 402609 | 11 | 35.79 | 42.45 | 12.4 | 0.31 | not reached |
+
+## Ensembles of the top-N search models
+
+| ensemble | val_ge_area | att_ge_area | att_ge_final | att_sr_final | att_traces_ge_lt_2 |
+|---|---|---|---|---|---|
+| top 1 | 17.11 | 20.91 | 1.91 | 0.77 | 1000 |
+| top 3 | 23.37 | 32.39 | 6.66 | 0.41 | not reached |
+| top 5 | 25.35 | 48.15 | 17.27 | 0.18 | not reached |
+| top 10 | 30.28 | 64.37 | 33.41 | 0.07 | not reached |
+
+## Loss: CCE vs CER (same model and seed)
+
+| model | cce_val_ge_area | cer_val_ge_area | cce_att_ge_area | cer_att_ge_area | cce_traces_ge_lt_2 | cer_traces_ge_lt_2 |
+|---|---|---|---|---|---|---|
+| search_08 | 17.11 | 31.61 | 20.91 | 41.73 | 1000 | not reached |
+| search_04 | 34.39 | 11.23 | 40.6 | 14.04 | not reached | 650 |
+| search_03 | 41.32 | 8.29 | 68.93 | 7.72 | not reached | 360 |
+
+## Ablations (mean ± std over seeds 1, 2, 3)
+
+| variant | seeds | reached_ge_lt_2 | traces_ge_lt_2 | att_ge_final | att_ge_area | val_ge_area | epochs_run | parameters |
+|---|---|---|---|---|---|---|---|---|
+| best_cnn | 3 | 3/3 | 393.3 ± 40.4 | 1.0 ± 0.0 | 8.6 ± 0.6 | 6.5 ± 0.7 | 25.7 ± 2.1 | 404105 |
+| mlp | 3 | 0/3 | n/a | 17.3 ± 4.3 | 46.7 ± 4.8 | 39.2 ± 6.0 | 18.3 ± 3.1 | 402609 |
+| cnn_sca_light | 3 | 0/3 | n/a | 114.0 ± 3.7 | 123.1 ± 3.2 | 118.5 ± 1.0 | 15.7 ± 2.1 | 140765 |
+| leakage_ID | 3 | 0/3 | n/a | 21.8 ± 6.0 | 25.9 ± 4.8 | 15.7 ± 5.8 | 31.0 ± 7.0 | 435968 |
+| profiling_5000 | 3 | 0/3 | n/a | 119.7 ± 1.2 | 120.5 ± 3.1 | 75.7 ± 8.7 | 23.7 ± 4.2 | 404105 |
+| profiling_10000 | 3 | 0/3 | n/a | 79.7 ± 6.7 | 95.4 ± 7.4 | 59.3 ± 5.7 | 37.3 ± 11.0 | 404105 |
+| profiling_25000 | 3 | 2/3 | 890.0 ± 0.0 | 39.5 ± 65.6 | 49.1 ± 53.9 | 53.2 ± 63.8 | 23.3 ± 10.3 | 404105 |
+
+## Meaning
+
+- Best single model on the validation set: `ablate_best_cnn_s2`, attack GE < 2 after 350 traces.
+- Phase 2 bar: `template_poi_HW` reaches GE < 2 after 260 traces (`resources/experiments/phase2_20261025_233322`). The best CNN does not beat it.
+
+Files: `ranking.csv`, `ensembles.csv`, `loss.csv`, `ablations.csv`, `ge_best.png`, `ablation_profiling.png`, `runs.csv`, `predictions/`, `tensorboard/`.
