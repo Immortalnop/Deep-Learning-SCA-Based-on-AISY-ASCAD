@@ -1,4 +1,4 @@
-# Deep Learning-Based Side-Channel Attack on AES Using Power Traces 
+cn't # Deep Learning-Based Side-Channel Attack on AES Using Power Traces 
 
 Neural networks learn from ASCAD power traces and recover AES key byte 2. Training, guessing entropy (GE),
 success rate (SR) and run logging use the AISY framework.
@@ -64,6 +64,8 @@ Run the phases in this order. Each step lists what it needs from the steps befor
 | 2 | Phase 0: Baseline (MLP vs CNN) | Dataset only | not timed yet: 3 seeds × 2 models × 50 epochs, 4–72 s per epoch |
 | 3 | Phase 2: Classic baselines | Dataset only (Phase 0 ids optional, for the plot) | about 4–5 min per seed |
 | 4 | Phase 3: Systematic CNN study | A finished Phase 2 run with the same subset seed | about 10–12 h |
+| 5 | Phase 4: Robustness to desynchronisation | A finished Phase 3 study, and the desync 50 / 100 data files | 15 runs per seed, about 3.5–4 h per seed (all 5 variants) |
+| 6 | Phase 5: Explainability (saliency) | Finished Phase 1 and Phase 3 studies, the desync files for the desync 50 / 100 profiles | about 20–25 min (one CNN) |
 
 Phase 1 runs before Phase 0 because it shows where the leakage is. It needs no training.
 
@@ -136,6 +138,60 @@ Full study, all stages in order (`search`, `loss`, `ablate`, `report`):
   ```
   This writes a real `phase3_<timestamp>/` folder and `index.csv` rows. Delete them afterwards.
 
+### Phase 4: Robustness to desynchronisation
+
+Needs `data/ascad-variable-desync50.h5` and `data/ascad-variable-desync100.h5` next to `data/ASCAD.h5` (download
+commands in [Dataset](#dataset), "Desynchronised files"), and a finished Phase 3 study (the CNN is its best search
+model on the validation set).
+
+```powershell
+..\aisy_env\Scripts\python.exe -m scripts.phase4_robustness all
+..\aisy_env\Scripts\python.exe -m scripts.phase4_robustness all --seeds 1 --variants mlp cnn cnn_aug   # shorter
+```
+
+- Stages: `baseline` (Experiment A: train on desync 0, attack desync 0, 50, 100), `direct` (Experiment B: train and
+  attack on desync 50 and on 100), `report`. Run one stage with `--study resources\experiments\phase4_<timestamp>`;
+  finished runs are skipped and failed runs are retried.
+- Variants: `mlp`, `cnn` (Phase 3 model), `cnn_aug` (random shifts and noise), `cnn_wide` (doubled kernels),
+  `cnn_gap` (global average pooling instead of Flatten).
+- A run with non-finite predictions (diverged training) is recorded as failed, not as a result.
+- Main options: `--variants`, `--seeds` (1 2 3), `--levels` (50 100; empty = desync 0 only), `--phase3 <folder>`
+  (default: latest), `--epochs` (50), `--patience` (10), `--aug-shift` (100), `--aug-noise` (0.1).
+- Output: `resources/experiments/phase4_<timestamp>/` with `runs.csv`, `eval.csv`, `results.csv`, `ge_desync.png`,
+  `summary.md`.
+- Run with seeds 1 and 2 on desync 0, 50 and 100 (30 runs). Seed 3 is not run yet.
+
+### Phase 5: Explainability (saliency)
+
+Asks whether the CNN looks at the samples that leak. Needs a finished Phase 1 run (`snr.npz`) and a finished Phase 3
+study. AISY deletes its best-epoch weights, so the `train` stage retrains the Phase 4 desync 0 model with the same
+recipe and seed and keeps the weights. A Phase 4 study is only used as a reference for the retraining.
+
+```powershell
+..\aisy_env\Scripts\python.exe -m scripts.phase5_saliency all
+..\aisy_env\Scripts\python.exe -m scripts.phase5_saliency all --variants cnn cnn_aug   # also the augmented model
+..\aisy_env\Scripts\python.exe -m scripts.phase5_saliency saliency --study resources\experiments\phase5_<timestamp>
+```
+
+- Stages: `train` (retrain on desync 0, save weights to `models/`), `saliency` (profiles, overlap with the SNR peaks,
+  occlusion test, report).
+- Saliency: mean of |d log p(correct class) / d sample| over `--traces` attack traces (2000). It is also computed with
+  the desync 0 model on the desync 50 and 100 attack traces (`--levels`, empty = desync 0 only).
+- Overlap with the SNR (Phase 1): Spearman correlation with the SNR of the masked value and of the mask, enrichment
+  of the saliency inside ±`--window` samples (5) of the SNR peaks, and the saliency percentile at each peak.
+- Occlusion: set samples to 0 and attack again on the Phase 2–4 subsets. Cases: none, the SNR-peak windows, the same
+  number of top-saliency samples, the same number of random samples (`--random-draws`, 5). If the saliency is
+  faithful, `top` hurts at least as much as `random`.
+- Main options: `--variants` (default `cnn`), `--seeds` (1), `--levels`, `--traces`, `--window`, `--random-draws`,
+  `--phase1`, `--phase3`, `--phase4` (default: latest of each), `--epochs`, `--patience`.
+- Output: `resources/experiments/phase5_<timestamp>/` with `saliency.png`, `occlusion.png`, `overlap.csv`,
+  `occlusion.csv`, `saliency.npz`, `models/`, `runs.csv`, `eval.csv`, `summary.md`. Read the first table of
+  `summary.md` first: if the retrained model does not reproduce the Phase 4 result, its saliency says little.
+- Result with `d0_cnn_s1` (one model): the saliency peaks at the two SNR peaks (enrichment 2.9, percentile ≥ 99.9).
+  Occluding the SNR peaks raises the GE area from 8.3 to 12.4, random samples leave it at 8.3, and the top-saliency
+  samples raise it to 19.0, so the CNN also uses samples outside the two peaks. On desync 50 and 100 the saliency
+  stays at the same positions (enrichment 2.3 and 2.2) and does not follow the shifted leakage.
+
 ### Other scripts
 
 AISY example scripts run the same way, for example `..\aisy_env\Scripts\python.exe -m scripts.script_aes_cnn`.
@@ -161,6 +217,26 @@ analysis ids in `index.csv` link a run folder to its database rows. Browse the r
 
 The AISY entry for it is `"ASCAD.h5"` in `AISY_Framework/custom/custom_datasets/datasets.py`. Since Phase 1 it uses
 the correct attack key and all 1,400 samples (see the Phase 1 changelog).
+
+### Desynchronised files (Phase 4 only)
+
+Phase 4 needs the same dataset with traces shifted by up to 50 and up to 100 samples. Download the two variable-key
+files from the data.gouv.fr dataset "ASCAD ATMega 8515 variable key" (about 418 MB each). Run from the project root;
+`curl.exe` ships with Windows 10 and later and shows progress:
+
+```powershell
+curl.exe -L -o AISY_Framework\data\ascad-variable-desync50.h5  https://static.data.gouv.fr/resources/ascad-atmega-8515-variable-key/20190903-084119/ascad-variable-desync50.h5
+curl.exe -L -o AISY_Framework\data\ascad-variable-desync100.h5 https://static.data.gouv.fr/resources/ascad-atmega-8515-variable-key/20190903-084306/ascad-variable-desync100.h5
+```
+
+- Each file must be 438,606,904 bytes: `(Get-Item AISY_Framework\data\ascad-variable-desync50.h5).Length`.
+- Optional check against the published SHA-1: `Get-FileHash AISY_Framework\data\ascad-variable-desync50.h5 -Algorithm SHA1`
+  must give `89DF73E8EFE8C814A9B704B28D40860488C1601B`; for desync100 it must give
+  `28827C055D7242CBB97AFAB63A27F0B94FE7F9E8`.
+- Do not use `ASCAD_desync50.h5` / `ASCAD_desync100.h5` from the older `ASCAD_data.zip` (4.4 GB). They are the
+  fixed-key set (700 samples, another key) and do not match Phase 0 to 3.
+- `data/ASCAD.h5` has the same size as the published `ascad-variable.h5` (438,606,904 bytes), so it is the desync 0
+  file. Its SHA-1 should be `DDC775DDD058C36EEB5191FAD95CAA42D373A5FB`. Nothing to download for desync 0.
 
 ## Scripts
 
